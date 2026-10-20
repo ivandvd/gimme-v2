@@ -755,8 +755,11 @@ html.vibe-loading.vibe-compose #header-group .vibe-marquee-section {
 }
 
 /* ---------- Hero (live: compiled styles.css, verbatim) ---------- */
+/* lavender behind the hero: only ever visible in the bottom corners it peels
+   on scroll, which then read as the press strip's band continuing underneath */
 .vibe-hero-section {
   margin-top: calc(-1 * var(--header-group-height));
+  background: #db98f9;
 }
 .vibe-hero {
   position: relative;
@@ -2105,10 +2108,11 @@ html.vibe-loading.vibe-compose #header-group .vibe-marquee-section {
   }
 }
 
-/* the press strip is a flat lavender band a little under the hero's rounded
-   corners, no rules: the same look as the ribbons further down */
+/* the press strip is a flat lavender band flush under the hero, no rules: the
+   same look as the ribbons further down. The hero wrapper is lavender too, so
+   the corners the hero peels on scroll show the band's colour, not the page */
 .press-marquee {
-  margin-top: calc(40 / 1440 * 100vw);
+  margin-top: 0;
 }
 
 /* ---- recipes slot, pass 2 (live: .vibe-recipes, rules verbatim; the live
