@@ -15,11 +15,11 @@ const LOGOS = [
   { id: "forbes", label: "Forbes", aspect: 200 / 54, height: 32 },
 ];
 
-/* same band as the live light ticker: 36px padding around a 37px row, so the
-   strip stays 109px tall; the gap between marks is the wide one from the
-   reference */
+/* the lavender band of the ribbons and the promo ticker, plum marks on it:
+   36px padding around a 37px row, so the strip stays 109px tall; the gap
+   between marks is the wide one from the reference */
 const VARS = {
-  "--vibe-mq-bg": "transparent",
+  "--vibe-mq-bg": "#db98f9",
   "--vibe-mq-fg": "#1f0229",
   "--vibe-mq-pad": "var(--press-pad, 36px)",
   "--marquee-gap": "clamp(60px, 12vw, 240px)",

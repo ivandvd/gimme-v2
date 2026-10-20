@@ -2105,11 +2105,10 @@ html.vibe-loading.vibe-compose #header-group .vibe-marquee-section {
   }
 }
 
-/* the press strip sits under the hero's rounded corners with both rules */
+/* the press strip is a flat lavender band a little under the hero's rounded
+   corners, no rules: the same look as the ribbons further down */
 .press-marquee {
   margin-top: calc(40 / 1440 * 100vw);
-  border-top: 1.5px solid var(--vibe-fg);
-  border-bottom: 1.5px solid var(--vibe-fg);
 }
 
 /* ---- recipes slot, pass 2 (live: .vibe-recipes, rules verbatim; the live
@@ -2789,10 +2788,10 @@ button.vibe-btn {
   }
 }
 
-/* ---- wavy text marquee between the variety packs and the banner: a thick
-   lavender band on a sine path, the line set along it in plum (Ribbon.tsx).
-   The packs section brings 120/1440vw of air, the banner none, so the
-   margins even that out. ---- */
+/* ---- wavy text marquee (Ribbon.tsx): a thick lavender band on a sine path,
+   the line set along it in plum. Used twice, between the packs and the good
+   stuff and between the banner and the final call to action; the sections
+   above bring 120-150/1440vw of air, so the margins even that out. ---- */
 .vibe-ribbon {
   position: relative;
   z-index: 1;
@@ -3391,14 +3390,6 @@ button.vibe-btn {
     grid-template-columns: max-content;
     gap: 8px;
   }
-}
-
-/* ---- ribbon, plum variant (the second one, after the accordion) ---- */
-.vibe-ribbon--plum .vibe-ribbon__band {
-  stroke: #1f0229;
-}
-.vibe-ribbon--plum .vibe-ribbon__text {
-  fill: #db98f9;
 }
 
 /* ---- form states: the club sign-up and the account email ---- */

@@ -43,8 +43,8 @@ export default function Home() {
         <Subscription />
         <Mascot />
         <Accordion />
-        <Ribbon line="Whatever you need, there’s a gimme for that. Day and night. Him and her." variant="plum" mirror />
         <Banner />
+        <Ribbon line="Whatever you need, there’s a gimme for that. Day and night. Him and her." mirror />
         <Cta />
         <Social />
       </main>
