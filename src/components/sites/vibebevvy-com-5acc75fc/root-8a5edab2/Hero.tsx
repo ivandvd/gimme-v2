@@ -133,21 +133,21 @@ const PHOTOS = "/sites/vibebevvy-com-5acc75fc/shared/photos";
    graded with scripts/grade-photo.py. --pos-m frames phones, --pos-d 750px up. */
 const HERO_SLIDES = [
   {
-    src: `${PHOTOS}/gimme-hero-pool-2.jpg`,
+    src: `${PHOTOS}/gimme-hero-pool-2.webp`,
     posMobile: "25% 50%",
     posDesktop: "50% 50%",
     headline: "Sip happens.",
     subhead: "A drink for every kind of day.",
   },
   {
-    src: `${PHOTOS}/gimme-hero-car.jpg`,
+    src: `${PHOTOS}/gimme-hero-car.webp`,
     posMobile: "55% 50%",
     posDesktop: "50% 50%",
     headline: "Stay golden.",
     subhead: "A drink for the long way home.",
   },
   {
-    src: `${PHOTOS}/gimme-hero-focus.jpg`,
+    src: `${PHOTOS}/gimme-hero-focus.webp`,
     posMobile: "50% 50%",
     posDesktop: "50% 50%",
     headline: "Lock in.",

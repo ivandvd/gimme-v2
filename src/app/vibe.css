@@ -963,8 +963,8 @@ html.vibe-loading.vibe-compose #header-group .vibe-marquee-section {
 .vibe-accordion {
   --va-bg: #fff1e7;
   --va-fg: #1f0229;
-  --va-pad-top: 150;
-  --va-pad-bottom: 0;
+  --va-pad-top: 20;
+  --va-pad-bottom: 120;
   background: var(--va-bg);
   color: var(--va-fg);
   padding-block-start: min(calc(var(--va-pad-top) * 1px), 48px);
@@ -1115,7 +1115,7 @@ html.vibe-loading.vibe-compose #header-group .vibe-marquee-section {
 .vibe-testimonial {
   --vt-bg: #fff1e7;
   --vt-fg: #1f0229;
-  --vt-pad-top: 150;
+  --vt-pad-top: 70;
   --vt-pad-bottom: 0;
   position: relative;
   overflow: hidden;
@@ -1420,7 +1420,7 @@ html.vibe-loading.vibe-compose #header-group .vibe-marquee-section {
 .vibe-packs {
   background: var(--vibe-bg);
   color: var(--vibe-fg);
-  padding-block: calc(150 / 1440 * 100vw) calc(90 / 1440 * 100vw);
+  padding-block: calc(150 / 1440 * 100vw) calc(120 / 1440 * 100vw);
 }
 .vibe-packs__head {
   text-align: center;
@@ -1655,6 +1655,10 @@ html.vibe-loading.vibe-compose #header-group .vibe-marquee-section {
 .vibe-packs__add.is-added {
   background: var(--vibe-fg);
   color: var(--vibe-bg);
+}
+.vibe-packs__add.is-adding {
+  opacity: 0.7;
+  cursor: progress;
 }
 .vibe-packs__note {
   margin: 44px auto 0;
@@ -2101,9 +2105,10 @@ html.vibe-loading.vibe-compose #header-group .vibe-marquee-section {
   }
 }
 
-/* the press strip keeps one rule of its own; the testimonial divider sits
-   directly above it and is the top one */
+/* the press strip sits under the hero's rounded corners with both rules */
 .press-marquee {
+  margin-top: calc(40 / 1440 * 100vw);
+  border-top: 1.5px solid var(--vibe-fg);
   border-bottom: 1.5px solid var(--vibe-fg);
 }
 
@@ -3258,7 +3263,7 @@ button.vibe-btn {
 .vibe-sub {
   background: var(--vibe-bg);
   color: var(--vibe-fg);
-  padding: 0 1.5625vw calc(120 / 1440 * 100vw);
+  padding: calc(120 / 1440 * 100vw) 1.5625vw calc(30 / 1440 * 100vw);
 }
 .vibe-sub__card {
   display: grid;
@@ -3386,4 +3391,194 @@ button.vibe-btn {
     grid-template-columns: max-content;
     gap: 8px;
   }
+}
+
+/* ---- ribbon, plum variant (the second one, after the accordion) ---- */
+.vibe-ribbon--plum .vibe-ribbon__band {
+  stroke: #1f0229;
+}
+.vibe-ribbon--plum .vibe-ribbon__text {
+  fill: #db98f9;
+}
+
+/* ---- form states: the club sign-up and the account email ---- */
+.vibe-footer__form-msg {
+  min-height: 1.4em;
+}
+.vibe-footer__field.is-error {
+  border-bottom-color: #b8314f;
+}
+.vibe-footer__form-msg--error,
+.vibe-account__note--error {
+  color: #b8314f;
+}
+.vibe-account__field.is-error {
+  border-color: #b8314f;
+}
+.vibe-footer__submit:disabled,
+.vibe-account__field button:disabled {
+  opacity: 0.5;
+  cursor: progress;
+}
+.vibe-footer__fine {
+  margin: 0;
+  text-align: center;
+  font-family: var(--vibe-font-mono);
+  font-size: 12px;
+  line-height: 1.4;
+  padding-inline: 20px;
+}
+.vibe-footer__fine a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+/* ---- cookie notice ---- */
+.vibe-cookie {
+  position: fixed;
+  left: 20px;
+  bottom: 20px;
+  z-index: 25;
+  width: min(calc(100vw - 40px), 440px);
+  padding: 18px 20px 20px;
+  border: 1.5px solid var(--vibe-fg);
+  border-radius: 16px;
+  background: var(--vibe-bg);
+  color: var(--vibe-fg);
+  box-shadow: 0 14px 40px rgb(31 2 41 / 0.14);
+  animation: vibe-cookie-in 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+@keyframes vibe-cookie-in {
+  from {
+    opacity: 0;
+    translate: 0 16px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+.vibe-cookie__text {
+  margin: 0 0 14px;
+  font-family: var(--vibe-font-mono);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.vibe-cookie__link {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+.vibe-cookie__actions {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.vibe-cookie__decline {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font-family: var(--vibe-font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+@media (prefers-reduced-motion: reduce) {
+  .vibe-cookie {
+    animation: none;
+  }
+}
+
+/* ---- legal pages (LegalPage.tsx): plum title band under the transparent
+   header, then a reading column on cream ---- */
+.vibe-legal-section {
+  margin-top: calc(-1 * var(--header-group-height));
+}
+.vibe-legal__head {
+  display: grid;
+  place-items: center;
+  min-height: 46svh;
+  padding: calc(var(--header-group-height) + 40px) 1.5625vw calc(70 / 1440 * 100vw);
+  background: var(--vibe-fg);
+  color: var(--vibe-bg);
+  text-align: center;
+}
+.vibe-legal__head-inner {
+  max-width: min(92vw, 900px);
+}
+.vibe-legal__eyebrow {
+  margin: 0 0 clamp(12px, 1vw, 18px);
+  font-family: var(--vibe-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--vibe-bg) 70%, transparent);
+}
+.vibe-legal__title {
+  margin: 0;
+  font-family: var(--vibe-font-display);
+  font-weight: 600;
+  font-size: max(36px, 4.5vw);
+  line-height: 1.05;
+  letter-spacing: 0.02em;
+  color: var(--vibe-bg);
+}
+.vibe-legal__updated {
+  margin: clamp(12px, 1vw, 18px) 0 0;
+  font-family: var(--vibe-font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--vibe-bg) 70%, transparent);
+}
+.vibe-legal__body {
+  max-width: 46em;
+  margin: 0 auto;
+  padding: clamp(40px, 5.2vw, 100px) 20px calc(120 / 1440 * 100vw);
+  color: var(--vibe-fg);
+}
+.vibe-legal__intro {
+  margin: 0 0 clamp(28px, 2.6vw, 48px);
+  font-family: var(--vibe-font-display);
+  font-weight: 600;
+  font-size: max(20px, 1.5vw);
+  line-height: 1.3;
+  letter-spacing: 0.01em;
+}
+.vibe-legal__block + .vibe-legal__block {
+  margin-top: clamp(24px, 2.2vw, 40px);
+  padding-top: clamp(24px, 2.2vw, 40px);
+  border-top: 1.5px solid color-mix(in srgb, var(--vibe-fg) 20%, transparent);
+}
+.vibe-legal__heading {
+  margin: 0 0 0.6em;
+  font-family: var(--vibe-font-display);
+  font-weight: 600;
+  font-size: max(20px, 1.4vw);
+  line-height: 1.2;
+}
+.vibe-legal__text,
+.vibe-legal__list {
+  margin: 0 0 0.9em;
+  font-family: var(--vibe-font-text);
+  font-size: max(16px, 1.1vw);
+  line-height: 1.5;
+}
+.vibe-legal__list {
+  padding-left: 1.2em;
+}
+.vibe-legal__list li + li {
+  margin-top: 0.35em;
+}
+.vibe-legal__outro {
+  margin: clamp(28px, 2.6vw, 48px) 0 0;
+  font-family: var(--vibe-font-mono);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: color-mix(in srgb, var(--vibe-fg) 70%, transparent);
 }

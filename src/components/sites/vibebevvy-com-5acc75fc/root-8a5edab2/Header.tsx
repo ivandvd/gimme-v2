@@ -10,8 +10,8 @@ import { AccountPopover, CartDrawer, SearchModal, type HeaderPanel } from "@/com
 import { MegaMenu } from "@/components/sites/vibebevvy-com-5acc75fc/root-8a5edab2/MegaMenu";
 import type { VibeNavLink } from "@/components/sites/vibebevvy-com-5acc75fc/shared/types";
 
-/* the "g" from the wordmark, in plum, between the ticker claims */
-const ICON = "/sites/vibebevvy-com-5acc75fc/shared/brand/gimme-g-plum.png";
+/* the live ticker's globe between the claims (he preferred it to the g mark) */
+const ICON = "/sites/vibebevvy-com-5acc75fc/root-8a5edab2/icons/marquee-globe.svg";
 
 const PROMO_ITEMS = ["Zero Sugar", "Low Calorie", "Real Fruit", "Low Carb", "Lab Tested", "Deliciously Made"];
 

@@ -10,6 +10,8 @@ import { PRODUCTS } from "@/components/sites/vibebevvy-com-5acc75fc/shared/produ
 
 export type HeaderPanel = "cart" | "account" | "search" | null;
 
+const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 function CloseIcon() {
   return (
     <svg aria-hidden="true" width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -120,11 +122,11 @@ export function CartDrawer({ open, onClose, onLogin }: { open: boolean; onClose:
  * coming-soon page until accounts exist.
  */
 export function AccountPopover({ open, onClose }: { open: boolean; onClose: () => void }) {
-  const [note, setNote] = useState<string | null>(null);
+  const [state, setState] = useState<"idle" | "error" | "sending" | "done">("idle");
   const [wasOpen, setWasOpen] = useState(open);
   if (open !== wasOpen) {
     setWasOpen(open);
-    if (!open) setNote(null);
+    if (!open) setState("idle");
   }
 
   return (
@@ -145,14 +147,34 @@ export function AccountPopover({ open, onClose }: { open: boolean; onClose: () =
         </div>
         <form
           className="vibe-account__form"
+          noValidate
           onSubmit={(event) => {
             event.preventDefault();
-            setNote("Coming soon. Accounts open with the first batch.");
+            if (state === "sending") return;
+            const email = String(new FormData(event.currentTarget).get("email") ?? "").trim();
+            if (!EMAIL.test(email)) {
+              setState("error");
+              return;
+            }
+            setState("sending");
+            window.setTimeout(() => setState("done"), 600);
           }}
         >
-          <div className="vibe-account__field">
-            <input type="email" name="email" placeholder="Email" aria-label="Email" autoComplete="email" required tabIndex={open ? 0 : -1} />
-            <button type="submit" aria-label="Continue" tabIndex={open ? 0 : -1}>
+          <div className={`vibe-account__field${state === "error" ? " is-error" : ""}`}>
+            <input
+              type="email"
+              name="email"
+              placeholder="Email"
+              aria-label="Email"
+              aria-invalid={state === "error"}
+              aria-describedby="account-email-msg"
+              autoComplete="email"
+              tabIndex={open ? 0 : -1}
+              onChange={() => {
+                if (state === "error") setState("idle");
+              }}
+            />
+            <button type="submit" aria-label="Continue" disabled={state === "sending"} tabIndex={open ? 0 : -1}>
               <ArrowGlyph />
             </button>
           </div>
@@ -161,9 +183,13 @@ export function AccountPopover({ open, onClose }: { open: boolean; onClose: () =
             <span className="vibe-account__check" aria-hidden="true" />
             Email me with news and offers
           </label>
-          {note ? (
-            <p className="vibe-account__note" role="status">
-              {note}
+          {state !== "idle" ? (
+            <p
+              id="account-email-msg"
+              className={`vibe-account__note${state === "error" ? " vibe-account__note--error" : ""}`}
+              role={state === "error" ? "alert" : "status"}
+            >
+              {state === "error" ? "Enter a valid email address." : state === "sending" ? "Sending…" : "Coming soon. Accounts open with the first batch."}
             </p>
           ) : null}
         </form>

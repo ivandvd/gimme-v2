@@ -4,6 +4,7 @@ import { NoticePage } from "@/components/sites/vibebevvy-com-5acc75fc/shared/Not
 
 export const metadata: Metadata = {
   title: "Page not found · Gimme Drinks",
+  description: "That page isn’t here. The drinks are.",
 };
 
 /**

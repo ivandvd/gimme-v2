@@ -1,3 +1,5 @@
+import type { Metadata } from "next";
+
 import { LenisProvider } from "@/components/sites/vibebevvy-com-5acc75fc/shared/LenisProvider";
 import { VibeEntrances } from "@/components/sites/vibebevvy-com-5acc75fc/shared/VibeEntrances";
 import { Accordion } from "@/components/sites/vibebevvy-com-5acc75fc/root-8a5edab2/Accordion";
@@ -16,6 +18,12 @@ import { Subscription } from "@/components/sites/vibebevvy-com-5acc75fc/root-8a5
 import { Testimonial } from "@/components/sites/vibebevvy-com-5acc75fc/root-8a5edab2/Testimonial";
 import { VarietyPacks } from "@/components/sites/vibebevvy-com-5acc75fc/root-8a5edab2/VarietyPacks";
 
+export const metadata: Metadata = {
+  title: "Gimme Drinks",
+  description:
+    "Zero-sugar drinks made with real fruit, each with a job to do. Energy, focus, probiotics, calm, sleep, her and him. Whatever you need, there’s a gimme for that.",
+};
+
 /* Mirrors the live DOM: .page-wrapper > #header-group (ticker, sticky header,
    megamenu spacer) > main#MainContent > sections, then the footer. */
 export default function Home() {
@@ -26,16 +34,17 @@ export default function Home() {
       </div>
       <main id="MainContent">
         <Hero />
-        <ProductGrid />
-        <Accordion />
-        <Testimonial />
         <PressMarquee />
+        <ProductGrid />
         <VarietyPacks />
-        <Subscription />
-        <Ribbon />
-        <Banner />
-        <Mascot />
+        <Ribbon line="Health that tastes like a treat. Real fruit. Zero sugar. One job each." />
         <Benefits />
+        <Testimonial />
+        <Subscription />
+        <Mascot />
+        <Accordion />
+        <Ribbon line="Whatever you need, there’s a gimme for that. Day and night. Him and her." variant="plum" mirror />
+        <Banner />
         <Cta />
         <Social />
       </main>

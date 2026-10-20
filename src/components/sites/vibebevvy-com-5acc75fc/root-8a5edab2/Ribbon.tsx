@@ -1,22 +1,31 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useId, useRef } from "react";
 
-/* One sentence, repeated along the wave. House rule: the word "can" never
-   appears in copy. */
-const LINE = "Health that tastes like a treat. Real fruit. Zero sugar. One job each.";
-const UNIT = `${LINE.toUpperCase()} `;
+import { cn } from "@/lib/utils";
+
+interface RibbonProps {
+  /** the sentence set along the wave; the component sets it in capitals */
+  line: string;
+  /** lavender band with plum type (default), or the inverse */
+  variant?: "lavender" | "plum";
+  /** mirror the wave so it drifts down to the right, and run the text the other way */
+  mirror?: boolean;
+}
+
 const COPIES = 6;
 /* user units per second; the band is drawn 1:1 at 1920 wide */
 const SPEED = 80;
 
 /* The wave's centre line: two periods across a 1920 box, drifting upward to
-   the right like the reference, overshooting both edges so the band never
-   shows an end. The ribbon is this path stroked thick; the text rides it. */
-function wavePath(): string {
+   the right like the reference (or the mirror image), overshooting both
+   edges so the band never shows an end. The ribbon is this path stroked
+   thick; the text rides it. */
+function wavePath(mirror: boolean): string {
+  const sign = mirror ? -1 : 1;
   const pts: [number, number][] = [];
   for (let x = -320; x <= 2240; x += 160) {
-    const y = 170 - (x / 1920) * 36 + 55 * Math.sin((x / 1180) * Math.PI * 2 + 0.6);
+    const y = 170 - sign * ((x / 1920) * 36) + sign * 55 * Math.sin((x / 1180) * Math.PI * 2 + 0.6);
     pts.push([x, y]);
   }
   let d = `M ${pts[0][0]} ${pts[0][1].toFixed(1)}`;
@@ -34,15 +43,18 @@ function wavePath(): string {
   return d;
 }
 
-const PATH = wavePath();
+const PATHS = { normal: wavePath(false), mirror: wavePath(true) };
 
 /**
- * Wavy text marquee between the variety packs and the banner: a thick
- * lavender band on a sine path with the line set along it in plum. The text's start offset
- * is advanced every frame and wraps every repeat, so the loop is seamless;
- * it pauses off-screen and stays still under prefers-reduced-motion.
+ * Wavy text marquee: a thick band on a sine path with a line set along it.
+ * The text's start offset is advanced every frame and wraps every repeat, so
+ * the loop is seamless; it pauses off-screen and stays still under
+ * prefers-reduced-motion. House rule: no "can" in the line.
  */
-export function Ribbon() {
+export function Ribbon({ line, variant = "lavender", mirror = false }: RibbonProps) {
+  const id = useId();
+  const pathId = `vibe-ribbon-path-${id.replace(/[^a-zA-Z0-9]/g, "")}`;
+  const unitText = `${line.toUpperCase()} `;
   const rootRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<SVGTextElement>(null);
   const pathRef = useRef<SVGTextPathElement>(null);
@@ -62,7 +74,7 @@ export function Ribbon() {
 
     const measure = () => {
       try {
-        unit = text.getSubStringLength(0, UNIT.length);
+        unit = text.getSubStringLength(0, unitText.length);
       } catch {
         unit = 0;
       }
@@ -75,7 +87,7 @@ export function Ribbon() {
       if (unit) {
         const dt = last ? Math.min(now - last, 100) : 0;
         offset = (offset + (dt / 1000) * SPEED) % unit;
-        textPath.setAttribute("startOffset", (-offset).toFixed(2));
+        textPath.setAttribute("startOffset", (mirror ? offset - unit : -offset).toFixed(2));
       }
       last = now;
       raf = requestAnimationFrame(frame);
@@ -95,18 +107,18 @@ export function Ribbon() {
       io.disconnect();
       if (raf) cancelAnimationFrame(raf);
     };
-  }, []);
+  }, [mirror, unitText]);
 
   return (
-    <div ref={rootRef} className="vibe-ribbon" aria-hidden="true">
+    <div ref={rootRef} className={cn("vibe-ribbon", variant === "plum" && "vibe-ribbon--plum")} aria-hidden="true">
       <svg viewBox="0 0 1920 300" preserveAspectRatio="xMinYMid slice" focusable="false">
         <defs>
-          <path id="vibe-ribbon-path" d={PATH} />
+          <path id={pathId} d={mirror ? PATHS.mirror : PATHS.normal} />
         </defs>
-        <use href="#vibe-ribbon-path" className="vibe-ribbon__band" />
+        <use href={`#${pathId}`} className="vibe-ribbon__band" />
         <text ref={textRef} className="vibe-ribbon__text">
-          <textPath ref={pathRef} href="#vibe-ribbon-path" startOffset="0">
-            {UNIT.repeat(COPIES)}
+          <textPath ref={pathRef} href={`#${pathId}`} startOffset="0">
+            {unitText.repeat(COPIES)}
           </textPath>
         </text>
       </svg>

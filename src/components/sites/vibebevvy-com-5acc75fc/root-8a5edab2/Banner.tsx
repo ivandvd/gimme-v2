@@ -3,12 +3,11 @@
 import { useRef } from "react";
 
 import { RevealOnScroll } from "@/components/sites/vibebevvy-com-5acc75fc/shared/RevealOnScroll";
-import { SplitTitle } from "@/components/sites/vibebevvy-com-5acc75fc/shared/SplitTitle";
 import { useVibeParallax } from "@/components/sites/vibebevvy-com-5acc75fc/shared/useVibeParallax";
 
 /* His orchard shot (mango on the right third, soft foliage on the left),
    through the house grade. */
-const PHOTO = "/sites/vibebevvy-com-5acc75fc/shared/photos/banner-orchard-film.jpg";
+const PHOTO = "/sites/vibebevvy-com-5acc75fc/shared/photos/banner-orchard-film.webp";
 
 /* The paper card and the quote, in the voice of the Charlie's Organics
    reference he sent, with gimme's approved claims only (real fruit, zero
@@ -57,9 +56,9 @@ export function Banner() {
             <img ref={imageRef} src={PHOTO} width={1704} height={923} sizes="97vw" alt="" loading="lazy" />
 
             <div className="vibe-banner__card">
-              <h2 className="vibe-banner__headline" data-vibe-title="" aria-label={HEADLINE}>
-                <SplitTitle text={HEADLINE} />
-              </h2>
+              <RevealOnScroll as="h2" className="vibe-banner__headline">
+                {HEADLINE}
+              </RevealOnScroll>
               <div className="vibe-banner__text">
                 {STORY.map((paragraph, index) => (
                   <RevealOnScroll key={index} as="p" className="vibe-banner__body" delay={0.1 + index * 0.1}>

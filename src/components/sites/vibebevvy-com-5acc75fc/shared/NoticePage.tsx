@@ -12,6 +12,8 @@ interface NoticePageProps {
   eyebrow: ReactNode;
   headline: string;
   subhead: string;
+  /** the blob button; Back home unless told otherwise */
+  action?: { label: string; href: string };
 }
 
 /**
@@ -21,7 +23,7 @@ interface NoticePageProps {
  * eyebrow, display headline with the letter pop, blob button). Used by the
  * 404 and by the coming-soon catch-all.
  */
-export function NoticePage({ eyebrow, headline, subhead }: NoticePageProps) {
+export function NoticePage({ eyebrow, headline, subhead, action = { label: "Back home", href: "/" } }: NoticePageProps) {
   return (
     <LenisProvider>
       <div id="header-group">
@@ -41,7 +43,7 @@ export function NoticePage({ eyebrow, headline, subhead }: NoticePageProps) {
                 {subhead}
               </RevealOnScroll>
               <div className="vibe-notice__cta" data-vibe-pop="" style={{ "--vibe-pop-delay": "0.55s" } as CSSProperties}>
-                <PillButton href="/">Back home</PillButton>
+                <PillButton href={action.href}>{action.label}</PillButton>
               </div>
             </div>
           </section>

@@ -11,7 +11,7 @@ import "swiper/css/effect-coverflow";
 
 import { PillButton } from "@/components/sites/vibebevvy-com-5acc75fc/shared/PillButton";
 import { PRODUCTS } from "@/components/sites/vibebevvy-com-5acc75fc/shared/products";
-import { SplitTitle } from "@/components/sites/vibebevvy-com-5acc75fc/shared/SplitTitle";
+import { RevealOnScroll } from "@/components/sites/vibebevvy-com-5acc75fc/shared/RevealOnScroll";
 import type { VibeProduct } from "@/components/sites/vibebevvy-com-5acc75fc/shared/types";
 
 const IMAGE_SIZES = "(min-width: 768px) 177px, 160px";
@@ -187,16 +187,15 @@ function CarouselFallback() {
 
 export function ProductGrid() {
   return (
-    <section className="vibe-cans w-full overflow-hidden bg-(--vibe-bg) pb-10 [padding-block-start:calc(150/1440*100vw)]">
-      <h2
-        data-vibe-title=""
-        aria-label={`${HEADING_A} ${HEADING_B}`}
+    <section className="vibe-cans w-full overflow-hidden bg-(--vibe-bg) pb-10 [padding-block-start:calc(110/1440*100vw)]">
+      {/* one calm slide-up for the whole heading (the letter pop wobbled at this size) */}
+      <RevealOnScroll
+        as="h2"
         className="mx-auto max-w-[73.6vw] px-[10px] text-center [text-wrap:balance] font-sans font-semibold text-[max(26px,3.646vw)] leading-[1.2] tracking-[0.02em] text-(--vibe-fg)"
       >
-        <SplitTitle text={HEADING_A} />
-        <br className="hidden min-[750px]:block" />{" "}
-        <SplitTitle text={HEADING_B} offset={HEADING_A.length} />
-      </h2>
+        {HEADING_A}
+        <br className="hidden min-[750px]:block" /> {HEADING_B}
+      </RevealOnScroll>
 
       <div className="[margin-block-start:40px] min-[750px]:[margin-block-start:calc(60/1440*100vw)]">
         {/* Swiper reads the clock while it mounts, which Next refuses to bake

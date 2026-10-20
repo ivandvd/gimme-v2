@@ -3,7 +3,6 @@ import type { CSSProperties } from "react";
 
 import { Marquee } from "@/components/sites/vibebevvy-com-5acc75fc/shared/Marquee";
 import { RevealOnScroll } from "@/components/sites/vibebevvy-com-5acc75fc/shared/RevealOnScroll";
-import { SplitTitle } from "@/components/sites/vibebevvy-com-5acc75fc/shared/SplitTitle";
 
 const ASSET_BASE = "/sites/vibebevvy-com-5acc75fc/root-8a5edab2";
 /* His seven shots, resized to 1000px wide and run through scripts/grade-photo.py (the house film grade). */
@@ -47,9 +46,9 @@ export function Social() {
     <section className="vibe-social">
       <div className="vibe-social__wrapper">
         <div className="vibe-social__header">
-          <h2 className="vibe-social__heading" data-vibe-title="" aria-label={HEADING}>
-            <SplitTitle text={HEADING} />
-          </h2>
+          <RevealOnScroll as="h2" className="vibe-social__heading">
+            {HEADING}
+          </RevealOnScroll>
           <RevealOnScroll as="p" className="vibe-social__body">
             {BODY}
           </RevealOnScroll>

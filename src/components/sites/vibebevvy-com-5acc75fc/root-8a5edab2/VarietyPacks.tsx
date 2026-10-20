@@ -5,7 +5,6 @@ import { useEffect, useRef, useState } from "react";
 
 import { PillButton } from "@/components/sites/vibebevvy-com-5acc75fc/shared/PillButton";
 import { RevealOnScroll } from "@/components/sites/vibebevvy-com-5acc75fc/shared/RevealOnScroll";
-import { SplitTitle } from "@/components/sites/vibebevvy-com-5acc75fc/shared/SplitTitle";
 
 const PACKS_BASE = "/sites/vibebevvy-com-5acc75fc/shared/packs";
 const SUBSCRIBE_OFF = 0.2;
@@ -70,7 +69,7 @@ function PackCard({ pack }: { pack: Pack }) {
   const [sizeIndex, setSizeIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [subscribe, setSubscribe] = useState(true);
-  const [added, setAdded] = useState(false);
+  const [status, setStatus] = useState<"idle" | "adding" | "added">("idle");
   const timer = useRef(0);
 
   useEffect(() => () => window.clearTimeout(timer.current), []);
@@ -81,10 +80,13 @@ function PackCard({ pack }: { pack: Pack }) {
   const perDrink = unit / size.count;
 
   const add = () => {
-    /* there is no cart yet; the button acknowledges and resets */
-    setAdded(true);
+    /* there is no cart yet: a short working state, then the notice, then reset */
     window.clearTimeout(timer.current);
-    timer.current = window.setTimeout(() => setAdded(false), 1800);
+    setStatus("adding");
+    timer.current = window.setTimeout(() => {
+      setStatus("added");
+      timer.current = window.setTimeout(() => setStatus("idle"), 1800);
+    }, 500);
   };
 
   return (
@@ -148,8 +150,14 @@ function PackCard({ pack }: { pack: Pack }) {
         <span className="vibe-packs__each">{money(perDrink)} each</span>
       </div>
 
-      <button type="button" className={`vibe-packs__add${added ? " is-added" : ""}`} onClick={add} aria-live="polite">
-        {added ? "Coming soon" : "Add to cart"}
+      <button
+        type="button"
+        className={`vibe-packs__add${status === "added" ? " is-added" : ""}${status === "adding" ? " is-adding" : ""}`}
+        onClick={add}
+        disabled={status !== "idle"}
+        aria-live="polite"
+      >
+        {status === "idle" ? "Add to cart" : status === "adding" ? "Adding…" : "Coming soon"}
       </button>
     </article>
   );
@@ -169,9 +177,9 @@ export function VarietyPacks() {
         <RevealOnScroll as="p" className="vibe-packs__eyebrow">
           Variety packs
         </RevealOnScroll>
-        <h2 className="vibe-packs__heading" data-vibe-title="" aria-label={HEADING}>
-          <SplitTitle text={HEADING} />
-        </h2>
+        <RevealOnScroll as="h2" className="vibe-packs__heading">
+          {HEADING}
+        </RevealOnScroll>
       </div>
 
       <div className="vibe-packs__grid">

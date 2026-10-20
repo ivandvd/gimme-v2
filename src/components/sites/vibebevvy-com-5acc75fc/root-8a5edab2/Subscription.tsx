@@ -5,12 +5,11 @@ import { useRef } from "react";
 
 import { PillButton } from "@/components/sites/vibebevvy-com-5acc75fc/shared/PillButton";
 import { RevealOnScroll } from "@/components/sites/vibebevvy-com-5acc75fc/shared/RevealOnScroll";
-import { SplitTitle } from "@/components/sites/vibebevvy-com-5acc75fc/shared/SplitTitle";
 import { useVibeParallax } from "@/components/sites/vibebevvy-com-5acc75fc/shared/useVibeParallax";
 
 /* His fridge shot (a hand reaching for Focus on a shelf of the lineup),
    through the house grade. */
-const PHOTO = "/sites/vibebevvy-com-5acc75fc/shared/photos/gimme-subscription-fridge-film.jpg";
+const PHOTO = "/sites/vibebevvy-com-5acc75fc/shared/photos/gimme-subscription-fridge-film.webp";
 
 /* After the "Get Cann on tap" reference: a soft panel with the pitch, the
    blob button and the perks, beside the photo. Words are his ("stay stocked
@@ -53,15 +52,15 @@ export function Subscription() {
   useVibeParallax(mediaRef, imageRef);
 
   return (
-    <section className="vibe-sub" id="subscribe" aria-labelledby="vibe-sub-heading">
+    <section className="vibe-sub" id="subscribe" aria-label={HEADING}>
       <div className="vibe-sub__card">
         <div className="vibe-sub__panel">
           <RevealOnScroll as="p" className="vibe-sub__eyebrow">
             Subscription
           </RevealOnScroll>
-          <h2 id="vibe-sub-heading" className="vibe-sub__heading" data-vibe-title="" aria-label={HEADING}>
-            <SplitTitle text={HEADING} />
-          </h2>
+          <RevealOnScroll as="h2" className="vibe-sub__heading">
+            {HEADING}
+          </RevealOnScroll>
           <RevealOnScroll as="p" className="vibe-sub__lead" delay={0.2}>
             {LEAD_A} {LEAD_B}{" "}
             <Link href={SIGN_IN.href} className="vibe-sub__signin">

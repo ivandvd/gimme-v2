@@ -2,10 +2,10 @@
 
 import { useRef } from "react";
 
-import { SplitTitle } from "@/components/sites/vibebevvy-com-5acc75fc/shared/SplitTitle";
+import { RevealOnScroll } from "@/components/sites/vibebevvy-com-5acc75fc/shared/RevealOnScroll";
 import { useVibeParallax } from "@/components/sites/vibebevvy-com-5acc75fc/shared/useVibeParallax";
 
-const PHOTO = "/sites/vibebevvy-com-5acc75fc/shared/photos/gimme-accordion-him-film.jpg";
+const PHOTO = "/sites/vibebevvy-com-5acc75fc/shared/photos/gimme-accordion-him-film.webp";
 
 /* approved 2026-10-19; same shape as the original ("Everything a cocktail
    should be. Nothing it usually is.") */
@@ -86,9 +86,9 @@ export function Accordion() {
           </div>
 
           <div className="vibe-accordion__content">
-            <h2 className="vibe-accordion__heading" data-vibe-title="" aria-label={HEADING}>
-              <SplitTitle text={HEADING} />
-            </h2>
+            <RevealOnScroll as="h2" className="vibe-accordion__heading">
+              {HEADING}
+            </RevealOnScroll>
             <div className="vibe-accordion__rows">
               {ITEMS.map((item) => (
                 <div key={item.id} className="vibe-accordion__item">

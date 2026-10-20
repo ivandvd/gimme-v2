@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import Script from "next/script";
 import { Suspense } from "react";
 
+import { CookieBanner } from "@/components/sites/vibebevvy-com-5acc75fc/shared/CookieBanner";
 import { PageTransition } from "@/components/sites/vibebevvy-com-5acc75fc/shared/PageTransition";
 import { VibeLoader } from "@/components/sites/vibebevvy-com-5acc75fc/shared/VibeLoader";
 
@@ -48,6 +49,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Suspense fallback={null}>
           <PageTransition />
         </Suspense>
+        <CookieBanner />
       </body>
     </html>
   );

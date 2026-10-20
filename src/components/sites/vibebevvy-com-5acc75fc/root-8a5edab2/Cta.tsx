@@ -5,12 +5,11 @@ import { useRef, type CSSProperties } from "react";
 
 import { PillButton } from "@/components/sites/vibebevvy-com-5acc75fc/shared/PillButton";
 import { RevealOnScroll } from "@/components/sites/vibebevvy-com-5acc75fc/shared/RevealOnScroll";
-import { SplitTitle } from "@/components/sites/vibebevvy-com-5acc75fc/shared/SplitTitle";
 import { useVibeParallax } from "@/components/sites/vibebevvy-com-5acc75fc/shared/useVibeParallax";
 
 /* His beach shot (the pair in the surf at dusk, Gimme Sleep in hand), through
    the house grade. */
-const PHOTO = "/sites/vibebevvy-com-5acc75fc/shared/photos/gimme-cta-beach-film.jpg";
+const PHOTO = "/sites/vibebevvy-com-5acc75fc/shared/photos/gimme-cta-beach-film.webp";
 
 /* After the "For the bold, the baked, and the blissed out" reference: a
    three-beat headline, a two-line lead, two actions. House rules: the word
@@ -35,16 +34,16 @@ export function Cta() {
   useVibeParallax(mediaRef, imageRef);
 
   return (
-    <section className="vibe-cta" aria-labelledby="vibe-cta-heading">
+    <section className="vibe-cta" aria-label={HEADLINE}>
       <div ref={mediaRef} className="vibe-cta__media">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img ref={imageRef} src={PHOTO} width={1916} height={821} sizes="100vw" alt="" loading="lazy" />
         <div className="vibe-cta__overlay" aria-hidden="true" />
         <div className="vibe-cta__inner">
           <div className="vibe-cta__text">
-            <h2 id="vibe-cta-heading" className="vibe-cta__headline" data-vibe-title="" aria-label={HEADLINE}>
-              <SplitTitle text={HEADLINE} />
-            </h2>
+            <RevealOnScroll as="h2" className="vibe-cta__headline">
+              {HEADLINE}
+            </RevealOnScroll>
             <RevealOnScroll as="p" className="vibe-cta__lead" delay={0.25}>
               {LEAD}
             </RevealOnScroll>

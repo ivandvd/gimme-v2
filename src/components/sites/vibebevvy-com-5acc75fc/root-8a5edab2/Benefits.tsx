@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useRef, useState } from "react";
 
-import { SplitTitle } from "@/components/sites/vibebevvy-com-5acc75fc/shared/SplitTitle";
+import { RevealOnScroll } from "@/components/sites/vibebevvy-com-5acc75fc/shared/RevealOnScroll";
 
 const SHARED = "/sites/vibebevvy-com-5acc75fc/shared";
 
@@ -84,9 +84,9 @@ export function Benefits() {
       <div className="vibe-recipes__divider" aria-hidden="true" />
 
       <div className="vibe-recipes__wrapper">
-        <h2 className="vibe-recipes__heading" data-vibe-title="" aria-label={HEADING}>
-          <SplitTitle text={HEADING} />
-        </h2>
+        <RevealOnScroll as="h2" className="vibe-recipes__heading">
+          {HEADING}
+        </RevealOnScroll>
 
         <div className="vibe-recipes__row-zone">
           <div ref={rowRef} className="vibe-recipes__row" onScroll={onScroll}>

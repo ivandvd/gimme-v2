@@ -5,6 +5,7 @@ import { NoticePage } from "@/components/sites/vibebevvy-com-5acc75fc/shared/Not
 
 export const metadata: Metadata = {
   title: "Coming soon · Gimme Drinks",
+  description: "This part of gimme is still in the works. The drinks aren’t.",
 };
 
 /* Every link and button on the site that has no page behind it yet, with the

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import type { VibeFooterColumn } from "@/components/sites/vibebevvy-com-5acc75fc/shared/types";
@@ -47,8 +48,11 @@ const LINK_COLUMNS: VibeFooterColumn[] = [
  * the two mono lines. The ice-cube stamp is Vibe's doodle, kept at his request. There is no mailing list yet, so the form
  * answers "Coming soon." in the live theme's message slot.
  */
+const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export function Footer() {
-  const [note, setNote] = useState<string | null>(null);
+  const router = useRouter();
+  const [state, setState] = useState<"idle" | "error" | "sending">("idle");
 
   return (
     <footer className="vibe-footer">
@@ -59,30 +63,45 @@ export function Footer() {
           <p className="vibe-footer__news-heading">Join the gimme club.</p>
           <form
             className="vibe-footer__form"
+            noValidate
             onSubmit={(event) => {
               event.preventDefault();
-              setNote("Coming soon. The list opens with the first batch.");
+              if (state === "sending") return;
+              const email = String(new FormData(event.currentTarget).get("email") ?? "").trim();
+              if (!EMAIL.test(email)) {
+                setState("error");
+                return;
+              }
+              /* no mailing list yet: a short sending state, then the welcome page */
+              setState("sending");
+              window.setTimeout(() => router.push("/thank-you"), 700);
             }}
           >
-            <div className="vibe-footer__field">
+            <div className={`vibe-footer__field${state === "error" ? " is-error" : ""}`}>
               <input
                 className="vibe-footer__input"
                 type="email"
                 name="email"
                 placeholder="Email"
                 aria-label="Email"
+                aria-invalid={state === "error"}
+                aria-describedby="footer-email-msg"
                 autoComplete="email"
-                required
+                onChange={() => {
+                  if (state === "error") setState("idle");
+                }}
               />
-              <button type="submit" className="vibe-footer__submit" aria-label="Subscribe">
+              <button type="submit" className="vibe-footer__submit" aria-label="Subscribe" disabled={state === "sending"}>
                 <Image src={`${ICONS_BASE}/footer-arrow.svg`} width={29} height={18} alt="" aria-hidden="true" />
               </button>
             </div>
-            {note ? (
-              <p className="vibe-footer__form-msg" role="status">
-                {note}
-              </p>
-            ) : null}
+            <p
+              id="footer-email-msg"
+              className={`vibe-footer__form-msg${state === "error" ? " vibe-footer__form-msg--error" : ""}`}
+              role={state === "error" ? "alert" : "status"}
+            >
+              {state === "error" ? "Enter a valid email address." : state === "sending" ? "Sending…" : "\u00a0"}
+            </p>
           </form>
           <div className="vibe-footer__stamp" aria-hidden="true">
             <Image className="vibe-footer__stamp-outer" src={`${ICONS_BASE}/footer-stamp.svg`} width={452} height={291} alt="" />
@@ -126,6 +145,11 @@ export function Footer() {
 
       <p className="vibe-footer__legal">Made for every kind of day.</p>
       <p className="vibe-footer__copyright">Copyright &copy;2026. Gimme Drinks. All rights reserved</p>
+      <p className="vibe-footer__fine">
+        <Link href="/privacy-policy">Privacy policy</Link>
+        <span aria-hidden="true"> · </span>
+        <Link href="/terms-and-conditions">Terms and conditions</Link>
+      </p>
     </footer>
   );
 }
