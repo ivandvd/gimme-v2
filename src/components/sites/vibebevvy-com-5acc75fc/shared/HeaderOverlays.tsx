@@ -7,8 +7,12 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { PillButton } from "@/components/sites/vibebevvy-com-5acc75fc/shared/PillButton";
 import { PRODUCTS } from "@/components/sites/vibebevvy-com-5acc75fc/shared/products";
+import { SUPPLEMENTS } from "@/components/sites/vibebevvy-com-5acc75fc/shared/supplements";
 
 export type HeaderPanel = "cart" | "account" | "search" | null;
+
+/* what the search covers: the five drinks, then the three softgels */
+const CATALOGUE = [...PRODUCTS, ...SUPPLEMENTS];
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -208,7 +212,7 @@ export function AccountPopover({ open, onClose }: { open: boolean; onClose: () =
 
 /**
  * Search modal under the header, after the live theme's predictive search:
- * one field, the seven drinks four across, filtered as you type.
+ * one field, the five drinks and the three softgels in a grid, filtered as you type.
  */
 export function SearchModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [query, setQuery] = useState("");
@@ -229,10 +233,10 @@ export function SearchModal({ open, onClose }: { open: boolean; onClose: () => v
   const results = useMemo(
     () =>
       needle
-        ? PRODUCTS.filter((product) =>
+        ? CATALOGUE.filter((product) =>
             `${product.name} ${product.flavorSubtitle} ${product.benefit ?? ""}`.toLowerCase().includes(needle),
           )
-        : PRODUCTS,
+        : CATALOGUE,
     [needle],
   );
 
@@ -274,7 +278,13 @@ export function SearchModal({ open, onClose }: { open: boolean; onClose: () => v
                 <li key={product.slug}>
                   <Link href={`/products/${product.slug}`} className="vibe-search__card" onClick={onClose} tabIndex={open ? 0 : -1}>
                     <span className="vibe-search__media">
-                      <Image src={product.primaryImage} alt="" width={262} height={692} sizes="140px" />
+                      <Image
+                        src={product.primaryImage}
+                        alt=""
+                        width={300}
+                        height={product.kind === "supplement" ? 300 : 692}
+                        sizes="140px"
+                      />
                     </span>
                     <span className="vibe-search__name">{product.name}</span>
                     <span className="vibe-search__price">{product.price}</span>
@@ -283,7 +293,7 @@ export function SearchModal({ open, onClose }: { open: boolean; onClose: () => v
               ))}
             </ul>
           ) : (
-            <p className="vibe-search__none">Nothing for “{query.trim()}”. Try a flavor, like cherry.</p>
+            <p className="vibe-search__none">Nothing for “{query.trim()}”. Try a flavor, like peach, or an ingredient, like saffron.</p>
           )}
         </div>
       </div>

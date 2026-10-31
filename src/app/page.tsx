@@ -15,13 +15,14 @@ import { ProductGrid } from "@/components/sites/vibebevvy-com-5acc75fc/root-8a5e
 import { Ribbon } from "@/components/sites/vibebevvy-com-5acc75fc/root-8a5edab2/Ribbon";
 import { Social } from "@/components/sites/vibebevvy-com-5acc75fc/root-8a5edab2/Social";
 import { Subscription } from "@/components/sites/vibebevvy-com-5acc75fc/root-8a5edab2/Subscription";
+import { Supplements } from "@/components/sites/vibebevvy-com-5acc75fc/root-8a5edab2/Supplements";
 import { Testimonial } from "@/components/sites/vibebevvy-com-5acc75fc/root-8a5edab2/Testimonial";
 import { VarietyPacks } from "@/components/sites/vibebevvy-com-5acc75fc/root-8a5edab2/VarietyPacks";
 
 export const metadata: Metadata = {
   title: "Gimme Drinks",
   description:
-    "Zero-sugar drinks made with real fruit, each with a job to do. Energy, focus, probiotics, calm, sleep, her and him. Whatever you need, there’s a gimme for that.",
+    "Zero-sugar drinks made with real fruit, each with a job to do. Energy, focus, calm, sleep and glow. Whatever you need, there’s a gimme for that.",
 };
 
 /* Mirrors the live DOM: .page-wrapper > #header-group (ticker, sticky header,
@@ -37,6 +38,7 @@ export default function Home() {
         <PressMarquee />
         <ProductGrid />
         <VarietyPacks />
+        <Supplements />
         <Ribbon line="Health that tastes like a treat. Real fruit. Zero sugar. One job each." />
         <Benefits />
         <Testimonial />
@@ -44,7 +46,7 @@ export default function Home() {
         <Mascot />
         <Accordion />
         <Banner />
-        <Ribbon line="Whatever you need, there’s a gimme for that. Day and night. Him and her." mirror />
+        <Ribbon line="Whatever you need, there’s a gimme for that. Day and night." mirror />
         <Cta />
         <Social />
       </main>

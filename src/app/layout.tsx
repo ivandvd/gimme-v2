@@ -28,7 +28,7 @@ const spaceMono = localFont({
 export const metadata: Metadata = {
   title: "Gimme Drinks",
   description:
-    "Zero-sugar drinks made with real fruit, each with a job to do. Energy, focus, probiotics, calm, sleep, her and him. Whatever you need, there’s a gimme for that.",
+    "Zero-sugar drinks made with real fruit, each with a job to do. Energy, focus, calm, sleep and glow. Whatever you need, there’s a gimme for that.",
 };
 
 /* vibebevvy.com: decide() runs in <head> before first paint so the lavender

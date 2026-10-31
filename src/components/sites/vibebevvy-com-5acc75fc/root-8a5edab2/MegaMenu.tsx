@@ -7,15 +7,19 @@ import { useCallback, useEffect, useRef, useState, type CSSProperties, type RefO
 import { cn } from "@/lib/utils";
 import { PRODUCTS } from "@/components/sites/vibebevvy-com-5acc75fc/shared/products";
 import { SliderArrow } from "@/components/sites/vibebevvy-com-5acc75fc/shared/SliderArrow";
+import { SUPPLEMENTS } from "@/components/sites/vibebevvy-com-5acc75fc/shared/supplements";
 
 /* Left column, after the live panel (Bevvies / Merch / Shop All). */
 const LINKS = [
   { label: "Drinks", href: "/collections/drinks" },
+  { label: "Supplements", href: "/collections/supplements" },
   { label: "Variety Packs", href: "/collections/packs" },
 ];
 const BOTTOM_LINK = { label: "Shop All", href: "/collections/shop-all" };
-/* tiles across, like the live panel; the rest scroll in with the arrows */
-const COLS = 4;
+/* the five drinks, then the three softgels */
+const TILES = [...PRODUCTS, ...SUPPLEMENTS];
+/* tiles across: the five drinks; the softgels scroll in with the arrows */
+const COLS = 5;
 
 interface MegaMenuProps {
   open: boolean;
@@ -28,9 +32,10 @@ interface MegaMenuProps {
  * vibebevvy.com's desktop Products panel (`.vibe-mega`, rules verbatim): a
  * fixed cream sheet under the header bar with a 1.5px plum rule, the
  * collection links in display type on the left and a row of product tiles
- * (290:420, rounded, the on-ice shots) with their names. Four tiles show at
- * once; the theme's hand-drawn arrows page the row through all seven. Hover
- * behaviour lives in Header.tsx. Hidden under 750px, where the drawer takes over.
+ * (290:420, rounded, the on-ice and open-jar shots) with their names. The
+ * five drinks show at once; the three softgels sit past the edge, and the
+ * theme's hand-drawn arrows page to them.
+ * Hover behaviour lives in Header.tsx. Hidden under 750px, where the drawer takes over.
  */
 export function MegaMenu({ open, top, panelRef }: MegaMenuProps) {
   const rowRef = useRef<HTMLDivElement>(null);
@@ -66,7 +71,7 @@ export function MegaMenu({ open, top, panelRef }: MegaMenuProps) {
     if (!row) return;
     const s = step(row);
     if (!s) return;
-    const last = Math.max(0, PRODUCTS.length - COLS);
+    const last = Math.max(0, TILES.length - COLS);
     index.current = Math.max(0, Math.min(last, index.current + direction));
     busyUntil.current = Date.now() + 700;
     /* arrows reflect the target right away, not when the scroll lands */
@@ -96,14 +101,14 @@ export function MegaMenu({ open, top, panelRef }: MegaMenuProps) {
 
         <div className="vibe-mega__row">
           <div ref={rowRef} className="vibe-mega__tiles" onScroll={measure}>
-            {PRODUCTS.map((product) => (
+            {TILES.map((product) => (
               <Link key={product.slug} href={`/products/${product.slug}`} className="vibe-mega__tile">
                 <span className="vibe-mega__tile-media">
                   <Image
                     src={product.hoverImage ?? product.primaryImage}
                     alt=""
                     fill
-                    sizes="(min-width: 750px) 19vw, 50vw"
+                    sizes="(min-width: 750px) 15vw, 50vw"
                     draggable={false}
                   />
                 </span>
@@ -114,7 +119,7 @@ export function MegaMenu({ open, top, panelRef }: MegaMenuProps) {
           <button
             type="button"
             className="vibe-mega__arrow vibe-mega__arrow--prev"
-            aria-label="Previous drinks"
+            aria-label="Previous products"
             disabled={edges.start}
             onClick={() => page(-1)}
           >
@@ -123,7 +128,7 @@ export function MegaMenu({ open, top, panelRef }: MegaMenuProps) {
           <button
             type="button"
             className="vibe-mega__arrow vibe-mega__arrow--next"
-            aria-label="More drinks"
+            aria-label="More products"
             disabled={edges.end}
             onClick={() => page(1)}
           >

@@ -9,7 +9,7 @@ import type { VibeFooterColumn } from "@/components/sites/vibebevvy-com-5acc75fc
 
 const ICONS_BASE = "/sites/vibebevvy-com-5acc75fc/root-8a5edab2/icons";
 
-/* The seven drinks, then the pages. Product hrefs match the catalogue slugs,
+/* The five drinks, then the collections and the pages. Product hrefs match the catalogue slugs,
    the collection and contact hrefs match the header, Reviews glides to the
    testimonial band like the live footer. Pages that do not exist yet are
    served by the coming-soon catch-all (src/app/[...slug]/page.tsx). */
@@ -18,21 +18,20 @@ const LINK_COLUMNS: VibeFooterColumn[] = [
     links: [
       { label: "Gimme Energy", href: "/products/gimme-energy" },
       { label: "Gimme Focus", href: "/products/gimme-focus" },
-      { label: "Gimme Probiotics", href: "/products/gimme-probiotics" },
       { label: "Gimme Calm", href: "/products/gimme-calm" },
-    ],
-  },
-  {
-    links: [
       { label: "Gimme Sleep", href: "/products/gimme-sleep" },
-      { label: "Gimme Her", href: "/products/gimme-her" },
-      { label: "Gimme Him", href: "/products/gimme-him" },
-      { label: "Variety Packs", href: "/collections/packs" },
     ],
   },
   {
     links: [
+      { label: "Gimme Glow", href: "/products/gimme-glow" },
+      { label: "Variety Packs", href: "/collections/packs" },
+      { label: "Supplements", href: "/collections/supplements" },
       { label: "All Products", href: "/collections/shop-all" },
+    ],
+  },
+  {
+    links: [
       { label: "Our Story", href: "/story" },
       { label: "Reviews", href: "/#reviews" },
       { label: "Contact", href: "/pages/contact" },

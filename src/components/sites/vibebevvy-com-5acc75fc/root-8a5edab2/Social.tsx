@@ -23,13 +23,12 @@ const SOCIAL_ICONS = [
 ];
 
 /* All cards the tall 310.5:450 size (his call; the live strip alternates
-   square and tall and carries a club poster in slot 2). The square shots are
-   nudged with an object-position where the centre crop would lose the drink:
-   1 Energy on pineapples, 8 the surf cap with Focus, 3 the sweater on the
-   beach, 4 Her with the cherry bag, 9 the lake with Him, 5 the lavender
-   poster, 6 three in hand, 7 Sleep on the car hood. */
+   square and tall and carries a club poster in slot 2): 1 Energy in oranges,
+   8 the surf cap with Focus, 3 the sweater on the beach, 4 Glow with the
+   cherry bag, 9 the lake with Glow, 5 the lavender poster, 6 three in hand,
+   7 Sleep on the car hood. */
 /* the pour shot (2) moved to the benefits section */
-const PHOTOS: { n: number; pos?: string }[] = [{ n: 1 }, { n: 8, pos: "32% 50%" }, { n: 3 }, { n: 4 }, { n: 9 }, { n: 5 }, { n: 6 }, { n: 7 }];
+const PHOTOS = [1, 8, 3, 4, 9, 5, 6, 7];
 
 /* The ticker component with its lavender band and padding switched off. */
 const MARQUEE_VARS = { "--vibe-mq-bg": "transparent", "--vibe-mq-pad": "0px" } as CSSProperties;
@@ -55,14 +54,13 @@ export function Social() {
         </div>
 
         <Marquee className="vibe-social__marquee" gap={22} speedFactor={25} style={MARQUEE_VARS}>
-          {PHOTOS.map(({ n, pos }) => (
+          {PHOTOS.map((n) => (
             <div key={n} className="vibe-social__card">
               <Image
                 src={`${SOCIAL_BASE}/gimme-social-${n}-film.jpg`}
                 alt=""
                 fill
                 sizes="(min-width: 750px) 21.56vw, 44vw"
-                style={pos ? { objectPosition: pos } : undefined}
               />
             </div>
           ))}

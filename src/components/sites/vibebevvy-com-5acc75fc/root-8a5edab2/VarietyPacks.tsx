@@ -33,10 +33,10 @@ const PACKS: Pack[] = [
     name: "The Lineup",
     contents: "One of each",
     image: `${PACKS_BASE}/the-lineup-film.jpg`,
-    alt: "The Lineup carton with all seven gimme drinks visible through the window, and the Energy drink standing in front",
+    alt: "The Lineup carton with one of each gimme drink visible through the window, and the Energy drink standing in front",
     sizes: [
-      { label: "7-pack", count: 7, price: 16.99 },
-      { label: "14-pack", count: 14, price: 32.99 },
+      { label: "5-pack", count: 5, price: 11.99 },
+      { label: "10-pack", count: 10, price: 22.99 },
     ],
   },
   {
@@ -48,17 +48,6 @@ const PACKS: Pack[] = [
     sizes: [
       { label: "8-pack", count: 8, price: 18.99 },
       { label: "16-pack", count: 16, price: 35.99 },
-    ],
-  },
-  {
-    id: "him-and-her",
-    name: "Him & Her",
-    contents: "Three Him, three Her",
-    image: `${PACKS_BASE}/him-and-her-film.jpg`,
-    alt: "Him and Her drinks standing together on a rose backdrop",
-    sizes: [
-      { label: "6-pack", count: 6, price: 13.99 },
-      { label: "12-pack", count: 12, price: 26.99 },
     ],
   },
 ];
@@ -167,7 +156,7 @@ function PackCard({ pack }: { pack: Pack }) {
  * Variety packs, in the slot vibebevvy.com uses for the scroll-scrubbed
  * spinning can. Same section rhythm as the rest of the page: 150/1440vw of
  * top padding, a mono eyebrow, the display heading with the scroll wipe,
- * three bordered, rounded media boxes (the accordion's box), then a plan
+ * two bordered, rounded media boxes (the accordion's box), then a plan
  * note and the blob button.
  */
 export function VarietyPacks() {

@@ -996,6 +996,10 @@ html.vibe-loading.vibe-compose #header-group .vibe-marquee-section {
   width: 100%;
   height: 115%;
   object-fit: cover;
+  /* the Calm shot is wider than this box, with the sunglasses at its top edge:
+     lean the crop right and grow the scroll zoom from the top to keep the eyes */
+  object-position: 72% 50%;
+  transform-origin: 50% 6.5%;
   will-change: transform;
 }
 .vibe-accordion__content {
@@ -1679,7 +1683,9 @@ html.vibe-loading.vibe-compose #header-group .vibe-marquee-section {
 }
 @media screen and (min-width: 990px) {
   .vibe-packs__grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    /* two packs, centred, each the width of a third of the row */
+    grid-template-columns: repeat(2, calc((100% - 2 * 1.5625vw) / 3));
+    justify-content: center;
     max-width: none;
     margin-top: calc(60 / 1440 * 100vw);
     padding-inline: 1.5625vw;
@@ -1688,6 +1694,36 @@ html.vibe-loading.vibe-compose #header-group .vibe-marquee-section {
 @media (prefers-reduced-motion: reduce) {
   .vibe-packs__media img,
   .vibe-packs__add {
+    transition: none;
+  }
+}
+
+/* ---- supplements (Supplements.tsx): the packs section once more, with the
+   three jars across the whole row. The box shows the jar cut-out on the
+   cream; the open-jar scene sits over it and fades in on hover, like the
+   drinks' on-ice shots, and stays on where there is no hover. ---- */
+.vibe-packs__media .vibe-packs__scene {
+  opacity: 0;
+  transition:
+    opacity 0.3s ease-in-out,
+    transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.vibe-packs__card:hover .vibe-packs__scene,
+.vibe-packs__card:focus-within .vibe-packs__scene {
+  opacity: 1;
+}
+@media (hover: none) {
+  .vibe-packs__media .vibe-packs__scene {
+    opacity: 1;
+  }
+}
+@media screen and (min-width: 990px) {
+  .vibe-packs--supplements .vibe-packs__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .vibe-packs__media .vibe-packs__scene {
     transition: none;
   }
 }
@@ -2747,7 +2783,7 @@ button.vibe-btn {
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 20px 16px;
 }
 .vibe-search__card {
@@ -2884,8 +2920,8 @@ button.vibe-btn {
 .vibe-mega__link--bottom {
   margin-top: auto;
 }
-/* four tiles across at the live size; the row scrolls (snap, no scrollbar)
-   and the theme's hand-drawn arrows page it */
+/* five tiles across, the whole line; if it outgrows that, the row scrolls
+   (snap, no scrollbar) and the theme's hand-drawn arrows page it */
 .vibe-mega__row {
   position: relative;
   flex: 1;

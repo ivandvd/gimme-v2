@@ -1,4 +1,6 @@
 export interface VibeProduct {
+  /** drinks come on a 600x1384 canvas, supplements on a square one */
+  kind?: "drink" | "supplement";
   slug: string;
   name: string;
   flavorSubtitle: string;
@@ -8,6 +10,17 @@ export interface VibeProduct {
   benefit?: string;
   color?: string;
   badge?: string;
+}
+
+/** a softgel jar: the product shape the search and menu read, plus what its card needs */
+export interface VibeSupplement extends VibeProduct {
+  kind: "supplement";
+  /** the name on the card, where the section already says gimme */
+  shortName: string;
+  hoverImage: string;
+  sceneAlt: string;
+  unitPrice: number;
+  count: number;
 }
 
 export interface VibeTestimonial {

@@ -8,7 +8,8 @@ import { RevealOnScroll } from "@/components/sites/vibebevvy-com-5acc75fc/shared
 import { useVibeParallax } from "@/components/sites/vibebevvy-com-5acc75fc/shared/useVibeParallax";
 
 /* His fridge shot (a hand reaching for Focus on a shelf of the lineup),
-   through the house grade. */
+   through the house grade. The 2026-10-31 version is landscape, so the box
+   shows its middle: Calm, Focus in hand, Sleep. */
 const PHOTO = "/sites/vibebevvy-com-5acc75fc/shared/photos/gimme-subscription-fridge-film.webp";
 
 /* After the "Get Cann on tap" reference: a soft panel with the pitch, the
@@ -87,7 +88,7 @@ export function Subscription() {
 
         <div ref={mediaRef} className="vibe-sub__media">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img ref={imageRef} src={PHOTO} width={1122} height={1402} sizes="(min-width: 990px) 52vw, 100vw" alt="" loading="lazy" />
+          <img ref={imageRef} src={PHOTO} width={1413} height={1113} sizes="(min-width: 990px) 52vw, 100vw" alt="" loading="lazy" />
         </div>
       </div>
     </section>

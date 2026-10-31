@@ -5,11 +5,11 @@ import { RevealOnScroll } from "@/components/sites/vibebevvy-com-5acc75fc/shared
 
 const ASSET_BASE = "/sites/vibebevvy-com-5acc75fc/root-8a5edab2";
 
-/* The gimme story (approved 2026-10-20). House rule: the word "can" never
-   appears in copy. */
+/* The gimme story (approved 2026-10-20; "for him and her" cut 2026-10-31 with
+   those drinks). House rule: the word "can" never appears in copy. */
 const STORY = [
   "Gimme started with a craving we couldn’t shake: something cold and sweet that actually did us good.",
-  "We grew up in families where food was medicine and nobody showed up to a gathering empty-handed. So we made drinks that do both. Each with its own job, for day and night, for him and her.",
+  "We grew up in families where food was medicine and nobody showed up to a gathering empty-handed. So we made drinks that do both. Each with its own job, for day and night.",
   "Real fruit. Ingredients that work. Zero sugar. Health that tastes like a treat.",
 ];
 

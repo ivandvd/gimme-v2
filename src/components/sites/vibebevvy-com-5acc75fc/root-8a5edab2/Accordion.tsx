@@ -5,7 +5,7 @@ import { useRef } from "react";
 import { RevealOnScroll } from "@/components/sites/vibebevvy-com-5acc75fc/shared/RevealOnScroll";
 import { useVibeParallax } from "@/components/sites/vibebevvy-com-5acc75fc/shared/useVibeParallax";
 
-const PHOTO = "/sites/vibebevvy-com-5acc75fc/shared/photos/gimme-accordion-him-film.webp";
+const PHOTO = "/sites/vibebevvy-com-5acc75fc/shared/photos/gimme-accordion-calm-film.webp";
 
 /* approved 2026-10-19; same shape as the original ("Everything a cocktail
    should be. Nothing it usually is.") */
@@ -23,7 +23,7 @@ const ITEMS: AccordionItem[] = [
   {
     id: "job",
     heading: "One job each",
-    body: "Energy, focus, calm, sleep, gut, her, him. Pick what you need, skip what you don’t.",
+    body: "Energy, focus, calm, sleep, glow. Pick what you need, skip what you don’t.",
     defaultOpen: true,
   },
   {
@@ -34,7 +34,7 @@ const ITEMS: AccordionItem[] = [
   {
     id: "caffeine",
     heading: "Caffeine where it counts",
-    body: "Only Energy and Focus carry it, from green tea. The other five are clean, so Calm and Sleep are safe after dark.",
+    body: "Only Energy and Focus carry it, from green tea. The other three are clean, so Calm and Sleep are safe after dark.",
   },
   {
     id: "tested",
@@ -77,10 +77,10 @@ export function Accordion() {
             <img
               ref={imageRef}
               src={PHOTO}
-              width={1024}
-              height={1536}
+              width={1322}
+              height={1190}
               sizes="(min-width: 750px) 48vw, 100vw"
-              alt="A woman in orange sunglasses sipping a Gimme Him, Black Cherry, in the sun"
+              alt="A woman in orange sunglasses sipping a Gimme Calm, White Peach, in the sun"
               loading="lazy"
             />
           </div>

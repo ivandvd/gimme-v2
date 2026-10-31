@@ -32,8 +32,8 @@ const BENEFITS: Benefit[] = [
     tag: "Health benefits",
     title: "Every drink has a job to do. Here’s what’s in each one, what it does, and why we chose it.",
     href: "/pages/health-benefits",
-    image: `${SHARED}/benefits/gimme-probiotics-panel-film.jpg`,
-    alt: "The Gimme Probiotics nutrition panel: 15 calories, 0g sugar, 3g fiber, 1 billion CFU of Bacillus coagulans, and its four benefits",
+    image: `${SHARED}/benefits/gimme-health-film.jpg`,
+    alt: "A Gimme Focus, Crisp Green Apple, packed in ice",
   },
   {
     id: "sustainability",

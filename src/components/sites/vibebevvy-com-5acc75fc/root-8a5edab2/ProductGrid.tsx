@@ -14,18 +14,19 @@ import { PRODUCTS } from "@/components/sites/vibebevvy-com-5acc75fc/shared/produ
 import { RevealOnScroll } from "@/components/sites/vibebevvy-com-5acc75fc/shared/RevealOnScroll";
 import type { VibeProduct } from "@/components/sites/vibebevvy-com-5acc75fc/shared/types";
 
-const IMAGE_SIZES = "(min-width: 768px) 177px, 160px";
-/* the on-ice tile is 4:5 at the can box's height, so about 2.1 times its width */
+const IMAGE_SIZES = "(min-width: 768px) 203px, 183px";
+/* the on-ice tile is 4:5 at the can box's height, so about 1.85 times its width */
 const ICE_SIZES = "(min-width: 768px) 400px, 340px";
-/* the user's own cut-out renders, framed on a 524x1384 canvas with every can 499px
-   wide and its lid at the same height, so the seven line up; the box keeps the
-   can at ~169px on desktop, like the Liquid Death row */
-const CAN_BOX = "can-box relative isolate mx-auto aspect-[524/1384] w-[160px] md:w-[177px]";
+/* the user's own cut-out renders, framed on a 600x1384 canvas with every can
+   1300px tall and its lid at the same height, so they line up; the box keeps
+   the can ~440px tall on desktop, the height of the older, slimmer cans, whose
+   files were padded out to the same canvas */
+const CAN_BOX = "can-box relative isolate mx-auto aspect-[600/1384] w-[183px] md:w-[203px]";
 
 
 /* Swiper's loop needs slidesPerView rounded up (+1 when centered) plus its
-   buffer of slides on each side, which at 3.75 per view is 8. Seven products
-   are one short, so the set is rendered twice; the dots map back to seven. */
+   buffer of slides on each side, which at 3.75 per view is 8. Five products
+   are three short, so the set is rendered twice; the dots map back to five. */
 const HEADING_A = "Whatever you need,";
 const HEADING_B = "there’s a gimme for that.";
 
