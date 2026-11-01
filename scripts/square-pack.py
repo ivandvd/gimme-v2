@@ -1,9 +1,10 @@
-"""Turn a pack render on a plain studio backdrop into the square card picture:
-crop to the box with a small margin at the sides, pad above and below with
-more of the backdrop (the edge rows smeared outward, as extend-canvas.py does)
-so the box sits in the middle of a square, then grade like the cut-outs
-(grade-cutout.py at 0.7: tone and colour only, no vignette or grain). Saves a
-JPEG at the render's own width.
+"""Turn a pack render on a plain studio backdrop into the square card picture.
+The square is the box plus a small margin, whichever way the box is longer;
+where the render has more than that, it is cropped around the box, and where
+it has less, the edge rows or columns are smeared outward (extend-canvas.py)
+so the backdrop simply continues. Then the picture is graded like the
+cut-outs (grade-cutout.py at 0.7: tone and colour only, no vignette or
+grain) and saved as a JPEG.
 
 usage: python -I scripts/square-pack.py <in> <out.jpg> [...more pairs]
 """
@@ -29,7 +30,7 @@ def load(name: str, file: str):
 extend_canvas = load("extend_canvas", "extend-canvas.py")
 grade_cutout = load("grade_cutout", "grade-cutout.py")
 
-MARGIN = 0.03  # of the width, each side of the box
+MARGIN = 0.03  # of the box's longer side, each side of it
 EDGE = 24  # levels from the backdrop at which a pixel counts as subject
 
 
@@ -47,31 +48,46 @@ def subject_box(img: np.ndarray) -> tuple[int, int, int, int]:
     return int(cols[0]), int(cols[-1]), int(rows[0]), int(rows[-1])
 
 
+def fit(length: int, s0: int, s1: int, side: int) -> tuple[int, int, int]:
+    """Along one axis: where to crop from, or how much to add before and after,
+    so that `side` pixels are centred on the subject (s0..s1)."""
+    centre = (s0 + s1) / 2
+    if length >= side:
+        start = int(min(max(0, round(centre - side / 2)), length - side))
+        return start, 0, 0
+    before = int(min(max(0, round(side / 2 - centre)), side - length))
+    return 0, before, side - length - before
+
+
 def square(src: str, dst: str) -> None:
     im = Image.open(src).convert("RGB")
     img = np.asarray(im).astype(np.int16)
     x0, x1, y0, y1 = subject_box(img)
     w, h = im.size
-    m = round(w * MARGIN)
-    left, right = max(0, x0 - m), min(w, x1 + 1 + m)
-    crop = im.crop((left, 0, right, h))
-    side = crop.width
-    pad = side - h
-    if pad < 0:
-        raise SystemExit(f"{src}: the box is taller than it is wide; crop it by hand")
-    # the box's middle lands in the middle of the square
-    centre = (y0 + y1) / 2
-    top = int(min(pad, max(0, round(side / 2 - centre))))
-    bottom = pad - top
+    side = int(round(max(x1 - x0 + 1, y1 - y0 + 1) * (1 + 2 * MARGIN)))
+    side = min(side, max(w, h))
+    cx, left, right = fit(w, x0, x1, side)
+    cy, top, bottom = fit(h, y0, y1, side)
+    crop = im.crop((cx, cy, cx + min(side, w), cy + min(side, h)))
     with tempfile.TemporaryDirectory() as tmp:
-        cropped = Path(tmp) / "crop.png"
-        padded = Path(tmp) / "padded.png"
+        step = Path(tmp) / "a.png"
+        crop.save(step)
+        if top or bottom:
+            extend_canvas.extend(str(step), str(step), top, bottom)
+        if left or right:
+            # extend-canvas works on the top and bottom: turn the picture on
+            # its side (left edge down), pad, turn it back
+            Image.open(step).transpose(Image.Transpose.ROTATE_90).save(step)
+            extend_canvas.extend(str(step), str(step), right, left)
+            Image.open(step).transpose(Image.Transpose.ROTATE_270).save(step)
         graded = Path(tmp) / "graded.png"
-        crop.save(cropped)
-        extend_canvas.extend(str(cropped), str(padded), top, bottom)
-        grade_cutout.grade_cutout(str(padded), str(graded), 0.7)
-        Image.open(graded).convert("RGB").save(dst, quality=92, optimize=True, progressive=True)
-    print(f"{dst}: box x {x0}-{x1} y {y0}-{y1} of {w}x{h}, cropped to {side} wide, padded {top} above / {bottom} below")
+        grade_cutout.grade_cutout(str(step), str(graded), 0.7)
+        out = Image.open(graded).convert("RGB")
+        out.save(dst, quality=92, optimize=True, progressive=True)
+    print(
+        f"{dst}: box x {x0}-{x1} y {y0}-{y1} of {w}x{h} -> {out.size[0]}x{out.size[1]}, "
+        f"crop from ({cx},{cy}), added {left}/{right} sideways, {top}/{bottom} up and down"
+    )
 
 
 if __name__ == "__main__":

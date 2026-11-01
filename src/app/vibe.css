@@ -1455,9 +1455,12 @@ html.vibe-loading.vibe-compose #header-group .vibe-marquee-section {
   padding-inline: 20px;
 }
 .vibe-packs__card {
+  position: relative;
   display: flex;
   flex-direction: column;
   min-width: 0;
+  /* the mix picker measures the card's width to sit under the square picture */
+  container-type: inline-size;
 }
 .vibe-packs__media {
   position: relative;
@@ -1576,8 +1579,9 @@ html.vibe-loading.vibe-compose #header-group .vibe-marquee-section {
   display: flex;
   flex-wrap: wrap;
   gap: 8px 22px;
-  margin: 16px 0 0;
-  padding: 0;
+  /* the top of the pinned block: whatever room the card has left goes above */
+  margin: auto 0 0;
+  padding: 16px 0 0;
   border: 0;
 }
 .vibe-packs__plan label {
@@ -1676,14 +1680,29 @@ html.vibe-loading.vibe-compose #header-group .vibe-marquee-section {
   justify-content: center;
   margin-top: 22px;
 }
-@media screen and (min-width: 990px) {
-  .vibe-packs__grid {
-    /* three across: the three packs, and the three softgels */
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    justify-content: center;
+/* the four packs: two across from 750px, four from 1200px; the three
+   softgels: three across from 990px. Cards in a row share its height, and
+   each pins its plan, price and button to the bottom, so those line up
+   whatever sits above them. */
+@media screen and (min-width: 750px) {
+  .vibe-packs:not(.vibe-packs--supplements) .vibe-packs__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     max-width: none;
     margin-top: calc(60 / 1440 * 100vw);
     padding-inline: 1.5625vw;
+  }
+}
+@media screen and (min-width: 990px) {
+  .vibe-packs--supplements .vibe-packs__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    max-width: none;
+    margin-top: calc(60 / 1440 * 100vw);
+    padding-inline: 1.5625vw;
+  }
+}
+@media screen and (min-width: 1200px) {
+  .vibe-packs:not(.vibe-packs--supplements) .vibe-packs__grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -1727,8 +1746,10 @@ html.vibe-loading.vibe-compose #header-group .vibe-marquee-section {
   margin-left: 6px;
 }
 
-/* ---- the three packs (2026-11-01): a badge on the hero pack's picture, a
-   line of copy under a set's name, the pick-your-own-mix list ---- */
+/* ---- the four packs (2026-11-01): a badge on the hero pack's picture, a
+   line of copy under each name, the duo's pair switch, the lineup's mix as a
+   row of chips, and its picker, which opens over the card's lower half so
+   the row of cards keeps its shape ---- */
 .vibe-packs__badge {
   position: absolute;
   top: 14px;
@@ -1751,11 +1772,93 @@ html.vibe-loading.vibe-compose #header-group .vibe-marquee-section {
   line-height: 1.4;
   color: color-mix(in srgb, var(--vibe-fg) 80%, transparent);
 }
+.vibe-packs__options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  flex: none;
+  margin-top: 10px;
+}
+.vibe-packs__options label {
+  font-family: var(--vibe-font-text);
+  font-size: max(13px, 0.85vw);
+  letter-spacing: 0;
+  text-transform: none;
+  white-space: nowrap;
+}
+.vibe-packs__chips {
+  display: flex;
+  align-items: center;
+  flex: none;
+  height: 44px;
+  margin-top: 10px;
+  padding: 0 14px 0 10px;
+  border: 1.5px solid var(--vibe-fg);
+  border-radius: 999px;
+}
+.vibe-packs__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding-right: 9px;
+  font-family: var(--vibe-font-mono);
+  font-size: max(12px, 0.78vw);
+  font-variant-numeric: tabular-nums;
+}
+.vibe-packs__chip img {
+  width: 14px;
+  height: auto;
+  display: block;
+}
+.vibe-packs__mix-toggle {
+  margin-left: auto;
+  border: 0;
+  padding: 0;
+  background: none;
+  color: inherit;
+  font-family: var(--vibe-font-mono);
+  font-size: max(12px, 0.78vw);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
 .vibe-packs__mix {
-  margin-top: 14px;
-  padding: 10px 14px 4px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 55%;
+  /* from just inside the bottom edge of the square picture */
+  top: calc(100cqw - 10px);
+  bottom: 0;
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  padding: 10px 14px 12px;
   border: 1.5px solid var(--vibe-fg);
   border-radius: clamp(14px, 1.2vw, 22px);
+  background: var(--vibe-bg);
+  box-shadow: 0 12px 32px rgb(31 2 41 / 0.12);
+  outline: none;
+}
+.vibe-packs__mix-done {
+  flex: none;
+  height: 44px;
+  margin-top: auto;
+  border: 1.5px solid var(--vibe-fg);
+  border-radius: 999px;
+  background: var(--vibe-fg);
+  color: var(--vibe-bg);
+  font-family: var(--vibe-font-mono);
+  font-size: max(12px, 0.78vw);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.vibe-packs__mix-done:disabled {
+  opacity: 0.5;
+  cursor: default;
 }
 .vibe-packs__mix-head {
   display: flex;
@@ -1775,12 +1878,12 @@ html.vibe-loading.vibe-compose #header-group .vibe-marquee-section {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 7px 0;
+  padding: 3px 0;
   border-top: 1px solid color-mix(in srgb, var(--vibe-fg) 16%, transparent);
 }
 .vibe-packs__mix-row img {
-  width: 22px;
-  height: auto;
+  width: auto;
+  height: 32px;
   flex: none;
 }
 .vibe-packs__mix-name {
@@ -1789,17 +1892,12 @@ html.vibe-loading.vibe-compose #header-group .vibe-marquee-section {
   font-size: max(14px, 0.9vw);
 }
 .vibe-packs__stepper--small {
-  height: 34px;
+  height: 32px;
   font-size: max(12px, 0.72vw);
 }
 .vibe-packs__stepper--small button {
   width: 32px;
   font-size: 15px;
-}
-/* a pick-your-own pack waits for its last drinks */
-.vibe-packs__add:disabled:not(.is-adding):not(.is-added) {
-  opacity: 0.5;
-  cursor: default;
 }
 .vibe-packs__media .vibe-packs__scene {
   opacity: 0;
