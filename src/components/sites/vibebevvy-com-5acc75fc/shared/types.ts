@@ -7,6 +7,8 @@ export interface VibeProduct {
   price?: string;
   primaryImage: string;
   hoverImage?: string;
+  /** the mega menu's portrait tile, where the hover image is not the one for it */
+  tileImage?: string;
   benefit?: string;
   color?: string;
   badge?: string;

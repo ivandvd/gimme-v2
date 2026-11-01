@@ -10,17 +10,24 @@ import { RevealOnScroll } from "@/components/sites/vibebevvy-com-5acc75fc/shared
 
 const SUBSCRIBE_OFF = 0.2;
 const HEADING = "Why pick one? Get them all.";
-const IMAGE_SIZES = "(min-width: 1200px) 24vw, (min-width: 750px) 47vw, 100vw";
+const IMAGE_SIZES = "(min-width: 990px) 31vw, (min-width: 750px) 560px, 100vw";
+const MAX_QUANTITY = 12;
 
 const money = (value: number) => `$${value.toFixed(2)}`;
-/* "Two of each" for ten, "Four of each" for twenty */
-const EACH = ["", "One", "Two", "Three", "Four", "Five", "Six"];
 /* "Gimme Energy" is "Energy" in the picker, where the section already says gimme */
 const short = (name: string) => name.replace(/^Gimme /, "");
+/* "Two of each" for ten, "Four of each" for twenty */
+const EACH = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve"];
+
+/* the mix for a new total: the same proportions where they divide evenly
+   (two boxes of your mix), otherwise the even split */
+function rescale(mix: number[], from: number, to: number): number[] {
+  const scaled = mix.map((n) => (n * to) / from);
+  return scaled.every(Number.isInteger) ? scaled : defaultMix(to);
+}
 
 function PackCard({ pack }: { pack: Pack }) {
   const picks = pack.kind === "mix";
-  const [sizeIndex, setSizeIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [subscribe, setSubscribe] = useState(true);
   const [status, setStatus] = useState<"idle" | "adding" | "added">("idle");
@@ -36,13 +43,15 @@ function PackCard({ pack }: { pack: Pack }) {
     if (mixOpen) panelRef.current?.focus();
   }, [mixOpen]);
 
-  const size = pack.sizes[sizeIndex];
+  const size = pack.sizes[0];
+  /* a pick-your-own pack is mixed across the whole order: ten drinks a box */
+  const total = size.count * quantity;
   const chosen = mix.reduce((sum, n) => sum + n, 0);
-  const missing = picks ? size.count - chosen : 0;
+  const missing = picks ? total - chosen : 0;
   /* the line under the name says "two of each" until the mix is changed */
-  const untouched = !picks || mix.every((n, i) => n === defaultMix(size.count)[i]);
+  const untouched = !picks || mix.every((n, i) => n === defaultMix(total)[i]);
   const unit = subscribe ? Math.round(size.price * (1 - SUBSCRIBE_OFF) * 100) / 100 : size.price;
-  const total = unit * quantity;
+  const price = unit * quantity;
   /* a set says what it saves against its contents bought one by one */
   const saving = picks ? 0 : separately(size) - size.price;
   const current = pack.options?.[option];
@@ -51,18 +60,18 @@ function PackCard({ pack }: { pack: Pack }) {
   const alt = current?.alt ?? pack.alt;
   const name = current?.name ?? pack.name;
   const blurb = current?.blurb ?? pack.blurb;
-  /* a pick-your-own pack's line follows its size and mix */
   const contents = !picks
     ? pack.contents
     : !untouched
-      ? `Your mix of ${size.count}`
-      : size.count % 5 === 0
-        ? `${EACH[size.count / 5] ?? size.count / 5} of each, try all five`
+      ? `Your mix of ${total}`
+      : total % 5 === 0
+        ? `${EACH[total / 5] ?? total / 5} of each, try all five`
         : pack.contents;
 
-  const chooseSize = (index: number) => {
-    setSizeIndex(index);
-    if (picks) setMix(defaultMix(pack.sizes[index].count));
+  const changeQuantity = (next: number) => {
+    const q = Math.max(1, Math.min(MAX_QUANTITY, next));
+    if (picks) setMix((m) => rescale(m, size.count * quantity, size.count * q));
+    setQuantity(q);
   };
   const bump = (i: number, by: 1 | -1) => setMix((m) => m.map((n, j) => (j === i ? n + by : n)));
 
@@ -96,32 +105,25 @@ function PackCard({ pack }: { pack: Pack }) {
       <p className="vibe-packs__blurb">{blurb}</p>
 
       <div className="vibe-packs__controls">
-        {pack.sizes.length > 1 ? (
-          /* two sizes per pack, so a pill switch instead of a native dropdown */
-          <fieldset className="vibe-packs__sizes">
-            <legend className="sr-only">Pack size</legend>
-            {pack.sizes.map((s, index) => (
-              <label key={s.label} className={index === sizeIndex ? "is-active" : undefined}>
-                <input type="radio" name={`${pack.id}-size`} checked={index === sizeIndex} onChange={() => chooseSize(index)} />
-                {s.label}
-              </label>
-            ))}
-          </fieldset>
-        ) : null}
-
         <div className="vibe-packs__stepper" role="group" aria-label="Quantity">
-          <button type="button" onClick={() => setQuantity((q) => Math.max(1, q - 1))} aria-label="Fewer" disabled={quantity === 1}>
+          <button type="button" onClick={() => changeQuantity(quantity - 1)} aria-label="Fewer" disabled={quantity === 1}>
             −
           </button>
           <output aria-live="polite">{quantity}</output>
-          <button type="button" onClick={() => setQuantity((q) => Math.min(12, q + 1))} aria-label="More" disabled={quantity === 12}>
+          <button type="button" onClick={() => changeQuantity(quantity + 1)} aria-label="More" disabled={quantity === MAX_QUANTITY}>
             +
           </button>
         </div>
+        {picks ? (
+          /* how many drinks the order holds, and the way into the picker */
+          <button type="button" className="vibe-packs__customize" onClick={() => setMixOpen(true)} aria-expanded={mixOpen}>
+            Customize your {total} drinks
+          </button>
+        ) : null}
       </div>
 
       {pack.options ? (
-        /* which pair goes in the box; the picture follows */
+        /* which set, or which pair, goes in the box; the picture and words follow */
         <fieldset className="vibe-packs__sizes vibe-packs__options">
           <legend className="sr-only">{pack.optionsLabel ?? "Choice"}</legend>
           {pack.options.map((o, index) => (
@@ -134,17 +136,14 @@ function PackCard({ pack }: { pack: Pack }) {
       ) : null}
 
       {picks ? (
-        /* the mix at a glance: each drink with its count, and the way into the picker */
-        <div className="vibe-packs__chips">
+        /* the mix at a glance: each drink with its count */
+        <div className="vibe-packs__chips" aria-label="Your mix">
           {PRODUCTS.map((drink, i) => (
             <span key={drink.slug} className="vibe-packs__chip" title={`${mix[i]} ${short(drink.name)}`}>
               <Image src={drink.primaryImage} alt="" width={14} height={32} />
               <span>{mix[i]}</span>
             </span>
           ))}
-          <button type="button" className="vibe-packs__mix-toggle" onClick={() => setMixOpen(true)} aria-expanded={mixOpen}>
-            Customize
-          </button>
         </div>
       ) : null}
 
@@ -163,7 +162,7 @@ function PackCard({ pack }: { pack: Pack }) {
       </fieldset>
 
       <div className="vibe-packs__price">
-        <span className="vibe-packs__now">{money(total)}</span>
+        <span className="vibe-packs__now">{money(price)}</span>
         {subscribe ? <s className="vibe-packs__was">{money(size.price * quantity)}</s> : null}
         <span className="vibe-packs__each">
           {saving > 0.005 ? `Save ${money(saving * quantity)} vs separately` : `${money(unit / size.count)} each`}
@@ -195,7 +194,7 @@ function PackCard({ pack }: { pack: Pack }) {
           <div className="vibe-packs__mix-head">
             <span>Your mix</span>
             <output aria-live="polite">
-              {chosen} / {size.count}
+              {chosen} / {total}
             </output>
           </div>
           {PRODUCTS.map((drink, i) => (
@@ -224,13 +223,13 @@ function PackCard({ pack }: { pack: Pack }) {
 
 /**
  * The packs, in the slot vibebevvy.com uses for the scroll-scrubbed spinning
- * can: the starter (ten or twenty drinks, an even split or your own mix), a
- * set with the softgels in (Glow, Cycle Care or Daily Care) and the softgels
- * in pairs (the duo). Same
- * section rhythm as the rest of the page: 150/1440vw of top padding, a mono
- * eyebrow, the display heading with the scroll wipe, three bordered, rounded
- * media boxes (the accordion's box) with their price and button pinned to
- * the same line, then a plan note and the blob button.
+ * can: the starter (ten drinks a box, an even split or your own mix across
+ * the order), a set with the softgels in (Glow, Cycle Care or Daily Care)
+ * and the softgels in pairs (the duo). Same section rhythm as the rest of
+ * the page: 150/1440vw of top padding, a mono eyebrow, the display heading
+ * with the scroll wipe, three bordered, rounded media boxes (the accordion's
+ * box) with their price and button pinned to the same line, then a plan
+ * note and the blob button.
  */
 export function VarietyPacks() {
   return (

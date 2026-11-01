@@ -1771,21 +1771,46 @@ html.vibe-loading.vibe-compose #header-group .vibe-marquee-section {
   text-transform: none;
   white-space: nowrap;
 }
+/* beside the quantity: the way into the picker, saying how many drinks the
+   order holds (ten a box) */
+.vibe-packs__customize {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 44px;
+  padding: 0 16px;
+  border: 1.5px solid var(--vibe-fg);
+  border-radius: 999px;
+  background: none;
+  color: inherit;
+  font-family: var(--vibe-font-mono);
+  font-size: max(12px, 0.78vw);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+.vibe-packs__customize:hover {
+  background: color-mix(in srgb, var(--vibe-fg) 8%, transparent);
+}
+/* the mix at a glance: each drink with its count, spread along the row */
 .vibe-packs__chips {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   flex: none;
   height: 44px;
   margin-top: 10px;
-  padding: 0 14px 0 10px;
+  padding: 0 22px;
   border: 1.5px solid var(--vibe-fg);
   border-radius: 999px;
 }
 .vibe-packs__chip {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding-right: 9px;
+  gap: 5px;
   font-family: var(--vibe-font-mono);
   font-size: max(12px, 0.78vw);
   font-variant-numeric: tabular-nums;
@@ -1794,20 +1819,6 @@ html.vibe-loading.vibe-compose #header-group .vibe-marquee-section {
   width: 14px;
   height: auto;
   display: block;
-}
-.vibe-packs__mix-toggle {
-  margin-left: auto;
-  border: 0;
-  padding: 0;
-  background: none;
-  color: inherit;
-  font-family: var(--vibe-font-mono);
-  font-size: max(12px, 0.78vw);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  text-decoration: underline;
-  text-underline-offset: 0.2em;
-  cursor: pointer;
 }
 .vibe-packs__mix {
   position: absolute;
@@ -1894,23 +1905,17 @@ html.vibe-loading.vibe-compose #header-group .vibe-marquee-section {
 .vibe-packs__media:hover .vibe-packs__scene {
   opacity: 1;
 }
-/* the supplements' scene is a 2:3 flat-lay, shown as a rounded 4:5 tile the
-   height of the box and centred on the jar, like a can's on-ice shot */
+/* the supplements' scene is a square feature graphic, shown as a rounded
+   tile filling the square box, like a can's on-ice shot over the can */
 .vibe-packs__scene--tile {
   position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 50%;
-  aspect-ratio: 4 / 5;
-  transform: translateX(-50%);
+  inset: 0;
   border-radius: clamp(16px, 1.615vw, 34px);
   overflow: hidden;
   background: #efe3d4;
 }
 .vibe-packs__scene--tile img {
   object-fit: cover;
-  /* the jar sits a little above the middle of the flat-lay */
-  object-position: 50% 35%;
 }
 /* (touch screens used to show the scene from the start; now they keep the
    jar, as the cans keep theirs, and a tap into the card's controls reveals

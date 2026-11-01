@@ -42,7 +42,7 @@ const GROUPS: Group[] = [
     key: "supplements",
     label: "Supplements",
     href: "/collections/supplements",
-    tiles: SUPPLEMENTS.map((s) => ({ key: s.slug, href: `/products/${s.slug}`, image: s.hoverImage ?? s.primaryImage, name: s.name })),
+    tiles: SUPPLEMENTS.map((s) => ({ key: s.slug, href: `/products/${s.slug}`, image: s.tileImage ?? s.hoverImage ?? s.primaryImage, name: s.name })),
   },
   {
     key: "packs",

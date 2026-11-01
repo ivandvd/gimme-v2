@@ -45,11 +45,11 @@ function SupplementCard({ supplement }: { supplement: VibeSupplement }) {
     <article className="vibe-packs__card">
       <div className="vibe-packs__media">
         <Image src={supplement.primaryImage} alt={supplement.name} fill sizes={IMAGE_SIZES} quality={85} />
-        {/* the flat-lay of the jar among its ingredient, as a rounded 4:5 tile
-            over the cut-out while the pointer is on it, the way the on-ice shot
+        {/* the square feature graphic, as a rounded tile filling the box over
+            the cut-out while the pointer is on it, the way the on-ice shot
             sits over a can; touch screens keep the cut-out */}
         <span className="vibe-packs__scene vibe-packs__scene--tile">
-          <Image src={supplement.hoverImage} alt={supplement.sceneAlt} fill sizes="(min-width: 990px) 25vw, 80vw" quality={85} />
+          <Image src={supplement.hoverImage} alt={supplement.sceneAlt} fill sizes={IMAGE_SIZES} quality={85} />
         </span>
       </div>
 

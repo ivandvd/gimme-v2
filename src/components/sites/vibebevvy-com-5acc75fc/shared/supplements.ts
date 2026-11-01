@@ -9,9 +9,12 @@ const PRICE = `$${SUPPLEMENT_PRICE.toFixed(2)}`;
 /* The three softgels in the owner's pastel jars (2026-11-01 renders).
    `primaryImage` is the jar cut out of his studio render and framed on the
    1200x1200 card canvas (scripts/cut-jar.py), graded with
-   scripts/grade-cutout.py at 0.7; `hoverImage` his flat-lay of the jar among
-   its ingredient (2:3), graded with scripts/grade-photo.py at 0.5 without
-   grain; the sources sit next to them.
+   scripts/grade-cutout.py at 0.7; `hoverImage` his square feature graphic
+   (headline, jar among softgels, benefit call-outs), graded tone and colour
+   only at 0.5 so its text and colours stay true; `tileImage` his flat-lay of
+   the jar among its ingredient (2:3) for the menu's portrait tiles, graded
+   with scripts/grade-photo.py at 0.5 without grain. The sources sit next to
+   them.
    `color` is the cap's colour. Shared by the supplements section, the search
    modal and the mega menu, so the names here are the ones that sit next to
    the drinks: the Glow softgels share their name with the Glow drink and get
@@ -29,8 +32,9 @@ export const SUPPLEMENTS: VibeSupplement[] = [
     unitPrice: SUPPLEMENT_PRICE,
     count: 60,
     primaryImage: `${SUPPLEMENT_BASE}/gimme-pms-relief-jar-v3-film.png`,
-    hoverImage: `${SUPPLEMENT_BASE}/gimme-pms-relief-flatlay-clean.jpg`,
-    sceneAlt: "A lavender jar of Gimme PMS Relief softgels from above, among saffron threads and purple crocus flowers on lavender",
+    hoverImage: `${SUPPLEMENT_BASE}/gimme-pms-relief-feature-clean.jpg`,
+    tileImage: `${SUPPLEMENT_BASE}/gimme-pms-relief-flatlay-clean.jpg`,
+    sceneAlt: "Find your balance: the Gimme PMS Relief jar among floating softgels, a crocus and saffron on lilac, with less bloating, more balanced, mood support and cycle support called out",
   },
   {
     kind: "supplement",
@@ -44,8 +48,9 @@ export const SUPPLEMENTS: VibeSupplement[] = [
     unitPrice: SUPPLEMENT_PRICE,
     count: 60,
     primaryImage: `${SUPPLEMENT_BASE}/gimme-glow-softgels-jar-v3-film.png`,
-    hoverImage: `${SUPPLEMENT_BASE}/gimme-glow-softgels-flatlay-clean.jpg`,
-    sceneAlt: "A blush-pink jar of Gimme Glow softgels from above, among golden sea moss on coral",
+    hoverImage: `${SUPPLEMENT_BASE}/gimme-glow-softgels-feature-clean.jpg`,
+    tileImage: `${SUPPLEMENT_BASE}/gimme-glow-softgels-flatlay-clean.jpg`,
+    sceneAlt: "Glow from within: the Gimme Glow jar among floating pink softgels on pink, with hydrated skin, clear complexion, natural glow and skin health from within called out",
   },
   {
     kind: "supplement",
@@ -59,7 +64,8 @@ export const SUPPLEMENTS: VibeSupplement[] = [
     unitPrice: SUPPLEMENT_PRICE,
     count: 60,
     primaryImage: `${SUPPLEMENT_BASE}/gimme-urinary-health-jar-v3-film.png`,
-    hoverImage: `${SUPPLEMENT_BASE}/gimme-urinary-health-flatlay-clean.jpg`,
-    sceneAlt: "A sage-green jar of Gimme Urinary Health softgels from above, among fresh cranberries and leaves on green",
+    hoverImage: `${SUPPLEMENT_BASE}/gimme-urinary-health-feature-clean.jpg`,
+    tileImage: `${SUPPLEMENT_BASE}/gimme-urinary-health-flatlay-clean.jpg`,
+    sceneAlt: "Your daily wellness: the Gimme Urinary Health jar among floating golden softgels and cranberries on mint, with urinary tract support, daily wellness, cranberry extract and 36 mg PACs called out",
   },
 ];

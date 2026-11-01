@@ -55,14 +55,13 @@ export function defaultMix(count: number): number[] {
   return PRODUCTS.map((_, i) => base + (i < extra ? 1 : 0));
 }
 
-/* The three packs (2026-11-01): the Starter Pack (ten or twenty drinks, an
-   even split or your own mix), the sets (six drinks and a jar of softgels:
-   Glow, Cycle Care or Daily Care) and the Supplement Duo (the softgels in
-   pairs). All the pictures are the owner's renders, framed by
-   scripts/square-pack.py. Prices are placeholders on the ladder he agreed: the
-   starter at the single price, the twenty about a seventh under, a set about
-   an eighth under its contents bought apart. House rule: the word "can"
-   never appears in copy. */
+/* The three packs (2026-11-01): the Starter Pack (ten drinks a box, an even
+   split or your own mix across however many boxes), the sets (six drinks
+   and a jar of softgels: Glow, Cycle Care or Daily Care) and the Supplement
+   Duo (the softgels in pairs). All the pictures are the owner's renders,
+   framed by scripts/square-pack.py. Prices are placeholders on the ladder he
+   agreed: the starter at the single price, a set about an eighth under its
+   contents bought apart. House rule: the word "can" never appears in copy. */
 export const PACKS: Pack[] = [
   {
     id: "starter-pack",
@@ -74,10 +73,8 @@ export const PACKS: Pack[] = [
     hoverImage: `${PACKS_BASE}/starter-pack-angle.jpg`,
     alt: "The gimme Starter Pack: a cream carton with a lavender lid and the five drinks showing through its window",
     badge: "Most popular",
-    sizes: [
-      { label: "10-pack", count: 10, price: 24.99 },
-      { label: "20-pack", count: 20, price: 42.99 },
-    ],
+    /* one box of ten; the quantity stepper counts boxes and the mix spans them */
+    sizes: [{ label: "10-pack", count: 10, price: 24.99 }],
   },
   {
     id: "set",
