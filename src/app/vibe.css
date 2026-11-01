@@ -1727,8 +1727,8 @@ html.vibe-loading.vibe-compose #header-group .vibe-marquee-section {
   margin-left: 6px;
 }
 
-/* ---- the three packs (2026-11-01): a badge on the hero pack's picture,
-   the pick-your-own-mix list and the softgel switch on the routine ---- */
+/* ---- the three packs (2026-11-01): a badge on the hero pack's picture, a
+   line of copy under a set's name, the pick-your-own-mix list ---- */
 .vibe-packs__badge {
   position: absolute;
   top: 14px;
@@ -1744,18 +1744,12 @@ html.vibe-loading.vibe-compose #header-group .vibe-marquee-section {
   text-transform: uppercase;
   pointer-events: none;
 }
-.vibe-packs__softgel {
-  /* the pill style grows to fill the controls row; on its own line in the
-     card's column it must not grow downward */
-  flex: none;
-  margin-top: 10px;
-}
-.vibe-packs__mix-summary {
-  margin: 0;
-  padding: 4px 0 8px;
+.vibe-packs__blurb {
+  margin: 10px 0 0;
   font-family: var(--vibe-font-text);
   font-size: max(14px, 0.9vw);
   line-height: 1.4;
+  color: color-mix(in srgb, var(--vibe-fg) 80%, transparent);
 }
 .vibe-packs__mix {
   margin-top: 14px;
@@ -1776,18 +1770,6 @@ html.vibe-loading.vibe-compose #header-group .vibe-marquee-section {
 }
 .vibe-packs__mix-head output {
   font-variant-numeric: tabular-nums;
-}
-.vibe-packs__mix-toggle {
-  border: 0;
-  padding: 0;
-  background: none;
-  color: inherit;
-  font: inherit;
-  letter-spacing: inherit;
-  text-transform: inherit;
-  text-decoration: underline;
-  text-underline-offset: 0.2em;
-  cursor: pointer;
 }
 .vibe-packs__mix-row {
   display: flex;

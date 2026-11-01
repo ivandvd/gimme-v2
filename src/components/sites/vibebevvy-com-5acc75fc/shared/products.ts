@@ -1,7 +1,9 @@
 import type { VibeProduct } from "./types";
 
 export const CAN_BASE = "/sites/vibebevvy-com-5acc75fc/shared/products";
-export const PRICE = "$2.49";
+/* a single drink; the packs price their contents against it */
+export const UNIT_PRICE = 2.49;
+export const PRICE = `$${UNIT_PRICE.toFixed(2)}`;
 
 /* gimme lineup, the graded "-film" copies of the cut-outs (scripts/cut-can.py).
    Five drinks in the new can designs (2026-10-31); Probiotics, Him and Her
