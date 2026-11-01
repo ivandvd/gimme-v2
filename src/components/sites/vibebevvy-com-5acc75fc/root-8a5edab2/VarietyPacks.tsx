@@ -13,6 +13,8 @@ const HEADING = "Why pick one? Get them all.";
 const IMAGE_SIZES = "(min-width: 1200px) 24vw, (min-width: 750px) 47vw, 100vw";
 
 const money = (value: number) => `$${value.toFixed(2)}`;
+/* "Two of each" for ten, "Four of each" for twenty */
+const EACH = ["", "One", "Two", "Three", "Four", "Five", "Six"];
 /* "Gimme Energy" is "Energy" in the picker, where the section already says gimme */
 const short = (name: string) => name.replace(/^Gimme /, "");
 
@@ -47,6 +49,16 @@ function PackCard({ pack }: { pack: Pack }) {
   const image = current?.image ?? pack.image;
   const hoverImage = current ? current.hoverImage : pack.hoverImage;
   const alt = current?.alt ?? pack.alt;
+  const name = current?.name ?? pack.name;
+  const blurb = current?.blurb ?? pack.blurb;
+  /* a pick-your-own pack's line follows its size and mix */
+  const contents = !picks
+    ? pack.contents
+    : !untouched
+      ? `Your mix of ${size.count}`
+      : size.count % 5 === 0
+        ? `${EACH[size.count / 5] ?? size.count / 5} of each, try all five`
+        : pack.contents;
 
   const chooseSize = (index: number) => {
     setSizeIndex(index);
@@ -77,11 +89,11 @@ function PackCard({ pack }: { pack: Pack }) {
 
       <div className="vibe-packs__body" data-vibe-reveal="">
         <span className="vibe-reveal__inner">
-          <h3 className="vibe-packs__name">{pack.name}</h3>
-          <p className="vibe-packs__contents">{untouched ? pack.contents : `Your mix of ${size.count}`}</p>
+          <h3 className="vibe-packs__name">{name}</h3>
+          <p className="vibe-packs__contents">{contents}</p>
         </span>
       </div>
-      <p className="vibe-packs__blurb">{pack.blurb}</p>
+      <p className="vibe-packs__blurb">{blurb}</p>
 
       <div className="vibe-packs__controls">
         {pack.sizes.length > 1 ? (
@@ -212,8 +224,9 @@ function PackCard({ pack }: { pack: Pack }) {
 
 /**
  * The packs, in the slot vibebevvy.com uses for the scroll-scrubbed spinning
- * can: the starter (ten drinks, two of each or your own mix), a set with the
- * softgels in (the glow set) and the softgels in pairs (the duo). Same
+ * can: the starter (ten or twenty drinks, an even split or your own mix), a
+ * set with the softgels in (Glow, Cycle Care or Daily Care) and the softgels
+ * in pairs (the duo). Same
  * section rhythm as the rest of the page: 150/1440vw of top padding, a mono
  * eyebrow, the display heading with the scroll wipe, three bordered, rounded
  * media boxes (the accordion's box) with their price and button pinned to

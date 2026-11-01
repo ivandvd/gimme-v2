@@ -12,10 +12,14 @@ export interface PackSize {
   price: number;
 }
 
-/** one way a set comes (the duo's pairs), with its own picture */
+/** one way a pack comes (one of the sets, or the duo's pairs), with its own
+    picture and, where it differs from the pack's, its own name and words */
 export interface PackOption {
   key: string;
+  /** the switch's label */
   label: string;
+  name?: string;
+  blurb?: string;
   image: string;
   hoverImage?: string;
   alt: string;
@@ -44,34 +48,39 @@ export interface Pack {
 }
 
 /** the mix a pick-your-own pack starts with: an even split of the five, any
-    remainder going to the first flavours (ten is two of each) */
+    remainder going to the first flavours (ten is two of each, twenty four) */
 export function defaultMix(count: number): number[] {
   const base = Math.floor(count / 5);
   const extra = count % 5;
   return PRODUCTS.map((_, i) => base + (i < extra ? 1 : 0));
 }
 
-/* The three packs (2026-11-01): the Starter Pack (ten drinks, two of each or
-   your own mix), the Glow Set (drinks with the softgels in) and the
-   Supplement Duo (the softgels in pairs). All three are the owner's renders,
-   framed by scripts/square-pack.py. Prices are placeholders on the ladder he
-   agreed: the starter at the single price, a set about an eighth under its
-   contents bought apart. House rule: the word "can" never appears in copy. */
+/* The three packs (2026-11-01): the Starter Pack (ten or twenty drinks, an
+   even split or your own mix), the sets (six drinks and a jar of softgels:
+   Glow, Cycle Care or Daily Care) and the Supplement Duo (the softgels in
+   pairs). All the pictures are the owner's renders, framed by
+   scripts/square-pack.py. Prices are placeholders on the ladder he agreed: the
+   starter at the single price, the twenty about a seventh under, a set about
+   an eighth under its contents bought apart. House rule: the word "can"
+   never appears in copy. */
 export const PACKS: Pack[] = [
   {
     id: "starter-pack",
     kind: "mix",
     name: "Starter Pack",
     contents: "Two of each, try all five",
-    blurb: "Two of each to start, or set your own mix of ten.",
-    badge: "Most popular",
+    blurb: "An even mix of the five to start, or set your own.",
     image: `${PACKS_BASE}/starter-pack.jpg`,
     hoverImage: `${PACKS_BASE}/starter-pack-angle.jpg`,
     alt: "The gimme Starter Pack: a cream carton with a lavender lid and the five drinks showing through its window",
-    sizes: [{ label: "10-pack", count: 10, price: 24.99 }],
+    badge: "Most popular",
+    sizes: [
+      { label: "10-pack", count: 10, price: 24.99 },
+      { label: "20-pack", count: 20, price: 42.99 },
+    ],
   },
   {
-    id: "glow-set",
+    id: "set",
     kind: "fixed",
     name: "Glow Set",
     contents: "6 drinks + 1 supplement",
@@ -79,7 +88,37 @@ export const PACKS: Pack[] = [
     image: `${PACKS_BASE}/glow-set.jpg`,
     hoverImage: `${PACKS_BASE}/glow-set-angle.jpg`,
     alt: "The gimme Glow Set: a pink carton of Glow and Sleep drinks with a jar of Glow softgels in a tray beside it",
-    sizes: [{ label: "Glow Set", count: 6, jars: 1, price: 34.99 }],
+    optionsLabel: "Set",
+    options: [
+      {
+        key: "glow",
+        label: "Glow",
+        name: "Glow Set",
+        blurb: "Glow and Sleep drinks, with a month of Glow softgels.",
+        image: `${PACKS_BASE}/glow-set.jpg`,
+        hoverImage: `${PACKS_BASE}/glow-set-angle.jpg`,
+        alt: "The gimme Glow Set: a pink carton of Glow and Sleep drinks with a jar of Glow softgels in a tray beside it",
+      },
+      {
+        key: "cycle-care",
+        label: "Cycle Care",
+        name: "Cycle Care Set",
+        blurb: "Calm and Sleep drinks, with a month of PMS Relief softgels.",
+        image: `${PACKS_BASE}/cycle-care-set.jpg`,
+        hoverImage: `${PACKS_BASE}/cycle-care-set-angle.jpg`,
+        alt: "The gimme Cycle Care Set: a pink and lilac carton of Calm and Sleep drinks with a jar of PMS Relief softgels in a tray beside it",
+      },
+      {
+        key: "daily-care",
+        label: "Daily Care",
+        name: "Daily Care Set",
+        blurb: "Energy, Calm and Focus drinks, with a month of Urinary Health softgels.",
+        image: `${PACKS_BASE}/daily-care-set.jpg`,
+        hoverImage: `${PACKS_BASE}/daily-care-set-angle.jpg`,
+        alt: "The gimme Daily Care Set: a sage and orange carton of Energy, Calm and Focus drinks with a jar of Urinary Health softgels in a tray beside it",
+      },
+    ],
+    sizes: [{ label: "Set", count: 6, jars: 1, price: 34.99 }],
   },
   {
     id: "supplement-duo",
