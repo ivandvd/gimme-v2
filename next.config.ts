@@ -10,8 +10,10 @@ const nextConfig: NextConfig = {
        optimizer; the largest photo is 1916 wide, so nothing above 1920 */
     deviceSizes: [640, 828, 1080, 1440, 1920],
     imageSizes: [96, 160, 256, 384],
-    /* 75 everywhere, 85 for the hero photos (the first thing anyone sees) */
-    qualities: [75, 85],
+    /* 75 everywhere, 90 for the hero photos: at that setting the optimizer's
+       WebP is indistinguishable from the file at full width, and phones
+       still get a sized-down copy */
+    qualities: [75, 90],
   },
   turbopack: {
     rules: {

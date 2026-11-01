@@ -32,7 +32,7 @@ const BENEFITS: Benefit[] = [
     tag: "Health benefits",
     title: "Every drink has a job to do. Here’s what’s in each one, what it does, and why we chose it.",
     href: "/pages/health-benefits",
-    image: `${SHARED}/benefits/gimme-health-grade.jpg`,
+    image: `${SHARED}/benefits/gimme-health-film.jpg`,
     alt: "A Gimme Focus, Crisp Green Apple, packed in ice",
   },
   {
@@ -40,7 +40,7 @@ const BENEFITS: Benefit[] = [
     tag: "Sustainability",
     title: "Real fruit comes from real farms. Here’s how we grow it, and how we give back to the people who do.",
     href: "/pages/sustainability",
-    image: `${SHARED}/benefits/gimme-sustainability-2-grade.jpg`,
+    image: `${SHARED}/benefits/gimme-sustainability-2-film.jpg`,
     alt: "Two pairs of hands sorting freshly picked red fruit on a wooden table at a farm",
   },
   {
@@ -48,7 +48,7 @@ const BENEFITS: Benefit[] = [
     tag: "Impact",
     title: "We’re on a mission to make everyday life a little brighter, and to back the women and communities who don’t always get heard. Every drink plays a part.",
     href: "/pages/impact",
-    image: `${SHARED}/benefits/gimme-impact-grade.jpg`,
+    image: `${SHARED}/benefits/gimme-impact-film.jpg`,
     alt: "Two friends laughing together on the grass in the sun, one holding a Gimme Focus",
   },
 ];

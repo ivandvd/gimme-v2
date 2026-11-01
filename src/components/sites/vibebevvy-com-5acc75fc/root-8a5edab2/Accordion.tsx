@@ -1,12 +1,11 @@
 "use client";
 
-import Image from "next/image";
 import { useRef } from "react";
 
 import { RevealOnScroll } from "@/components/sites/vibebevvy-com-5acc75fc/shared/RevealOnScroll";
 import { useVibeParallax } from "@/components/sites/vibebevvy-com-5acc75fc/shared/useVibeParallax";
 
-const PHOTO = "/sites/vibebevvy-com-5acc75fc/shared/photos/gimme-accordion-calm-grade.webp";
+const PHOTO = "/sites/vibebevvy-com-5acc75fc/shared/photos/gimme-accordion-calm-film.webp";
 
 /* approved 2026-10-19; same shape as the original ("Everything a cocktail
    should be. Nothing it usually is.") */
@@ -74,13 +73,16 @@ export function Accordion() {
       <section className="vibe-accordion">
         <div className="vibe-accordion__inner">
           <div ref={mediaRef} className="vibe-accordion__media vibe-parallax" data-vibe-scroll-effect="parallax">
-            <Image
+            {/* the file itself, not the image optimizer: its recompression softened the photo */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
               ref={imageRef}
               src={PHOTO}
               width={1322}
               height={1190}
               sizes="(min-width: 750px) 48vw, 100vw"
               alt="A woman in orange sunglasses sipping a Gimme Calm, White Peach, in the sun"
+              loading="lazy"
             />
           </div>
 
