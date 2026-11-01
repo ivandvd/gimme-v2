@@ -7,8 +7,8 @@ const nextConfig: NextConfig = {
   images: {
     /* fewer candidate widths than the defaults: a shorter srcset on every
        picture (the home page carries about forty) and more cache hits on the
-       optimizer; the largest photo is 1916 wide, so nothing above 1920 */
-    deviceSizes: [640, 828, 1080, 1440, 1920],
+       optimizer; 2560 and 3840 exist for the 4K hero photos on big screens */
+    deviceSizes: [640, 828, 1080, 1440, 1920, 2560, 3840],
     imageSizes: [96, 160, 256, 384],
     /* 85 for the photo tiles (75 softened them visibly), 90 for the hero,
        where the optimizer's WebP is then indistinguishable from the file at

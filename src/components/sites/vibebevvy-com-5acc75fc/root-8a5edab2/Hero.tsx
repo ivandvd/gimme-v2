@@ -129,26 +129,27 @@ function useHeroScrollEffect(sectionRef: RefObject<HTMLElement | null>, imageRef
 const PHOTOS = "/sites/vibebevvy-com-5acc75fc/shared/photos";
 
 /* Hero slideshow: each photo carries its own headline and subhead; the copy
-   crossfades with the photo and replays the letter-pop entrance. All files
-   are 1916x981 (extended at the top so the subject meets the ticker) and
-   graded with scripts/grade-photo.py. --pos-m frames phones, --pos-d 750px up. */
+   crossfades with the photo and replays the letter-pop entrance. The files
+   are 3840x2160, from the owner's 4K renders (2026-11-01), graded with
+   scripts/grade-photo.py without grain; the clean source sits next to each.
+   --pos-m frames phones, --pos-d 750px up. */
 const HERO_SLIDES = [
   {
-    src: `${PHOTOS}/gimme-hero-pool-2-clean.webp`,
+    src: `${PHOTOS}/gimme-hero-pool-2-4k.webp`,
     posMobile: "25% 50%",
     posDesktop: "50% 50%",
     headline: "Sip happens.",
     subhead: "A drink for every kind of day.",
   },
   {
-    src: `${PHOTOS}/gimme-hero-car-clean.webp`,
+    src: `${PHOTOS}/gimme-hero-car-4k.webp`,
     posMobile: "55% 50%",
     posDesktop: "50% 50%",
     headline: "Stay golden.",
     subhead: "A drink for the long way home.",
   },
   {
-    src: `${PHOTOS}/gimme-hero-focus-clean.webp`,
+    src: `${PHOTOS}/gimme-hero-focus-4k.webp`,
     posMobile: "50% 50%",
     posDesktop: "50% 50%",
     headline: "Lock in.",
@@ -235,7 +236,12 @@ export function Hero() {
                 src={slide.src}
                 alt=""
                 fill
-                sizes="100vw"
+                /* the photo box is 122% of the viewport's height and the
+                   picture covers it, so a 16:9 file is drawn 1.22x wider than
+                   the viewport on desktop: ask for that width. Phones show a
+                   slice of the middle; 850px x their 3x screens lands on the
+                   2560 copy, the most a first paint should carry */
+                sizes="(max-width: 749px) 850px, 122vw"
                 quality={90}
                 priority={index === 0}
                 onLoad={index === 0 ? () => setWarm(true) : undefined}
