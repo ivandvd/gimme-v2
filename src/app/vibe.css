@@ -623,6 +623,10 @@ html.vibe-loading.vibe-compose #header-group .vibe-marquee-section {
 /* cream circle actions: search / account / cart */
 .search-action {
   display: flex;
+  /* on phones this box is a grid item stretched to the 60px row (the column
+     is display: contents there), so without this the 34px button sat at the
+     top of the row, 12px above the account and cart buttons */
+  align-items: center;
 }
 .header-actions {
   display: flex;
