@@ -1908,6 +1908,24 @@ html.vibe-loading.vibe-compose #header-group .vibe-marquee-section {
 .vibe-packs__media:hover .vibe-packs__scene {
   opacity: 1;
 }
+/* the supplements' scene is a 2:3 flat-lay, shown as a rounded 4:5 tile the
+   height of the box and centred on the jar, like a can's on-ice shot */
+.vibe-packs__scene--tile {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  aspect-ratio: 4 / 5;
+  transform: translateX(-50%);
+  border-radius: clamp(16px, 1.615vw, 34px);
+  overflow: hidden;
+  background: #efe3d4;
+}
+.vibe-packs__scene--tile img {
+  object-fit: cover;
+  /* the jar sits a little above the middle of the flat-lay */
+  object-position: 50% 35%;
+}
 /* (touch screens used to show the scene from the start; now they keep the
    jar, as the cans keep theirs, and a tap into the card's controls reveals
    the scene through :focus-within) */
