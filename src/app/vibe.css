@@ -1827,6 +1827,14 @@ html.vibe-loading.vibe-compose #header-group .vibe-marquee-section {
 .vibe-packs__customize:hover {
   background: color-mix(in srgb, var(--vibe-fg) 8%, transparent);
 }
+/* the narrowest phones: the label keeps its words at a smaller set */
+@media screen and (max-width: 399px) {
+  .vibe-packs__customize {
+    padding: 0 12px;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+  }
+}
 /* the mix at a glance: each drink with its count, spread along the row */
 .vibe-packs__chips {
   display: flex;
@@ -3935,4 +3943,63 @@ button.vibe-btn {
   font-size: 12px;
   letter-spacing: 0.04em;
   color: color-mix(in srgb, var(--vibe-fg) 70%, transparent);
+}
+
+/* ---- thumb targets (mobile pass, 2026-11-01): the small round buttons keep
+   their size on screen but get an invisible 44px square to tap: the header's
+   34px icons and the drawer's close, the hero arrows, the panel closes and
+   the 11px carousel dots. The dots sit 10px apart, so theirs is only as wide
+   as a dot and its gap, or a tap on one dot would land on the next. The cart
+   close is already positioned, so it only gets the square. */
+.header-actions__action,
+.menu-drawer__close,
+.vibe-hero__arrow,
+.vibe-search__close,
+.vibe-account__close,
+.vibe-footer__submit,
+.vibe-recipes__dot,
+.vibe-testimonial__dot {
+  position: relative;
+}
+.header-actions__action::after,
+.menu-drawer__close::after,
+.vibe-hero__arrow::after,
+.vibe-search__close::after,
+.vibe-cart__close::after,
+.vibe-account__close::after,
+.vibe-footer__submit::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: max(100%, 44px);
+  height: max(100%, 44px);
+  transform: translate(-50%, -50%);
+}
+.vibe-recipes__dot::after,
+.vibe-testimonial__dot::after {
+  content: "";
+  position: absolute;
+  inset: -17px -5px;
+}
+/* the thin text controls grow the same way, by padding that a negative
+   margin cancels, so nothing around them moves: the plan radios (17px of
+   text), the footer's email field, the footer links (12px apart, so 6px
+   each way) and the "Sign in" link in the subscription copy */
+.vibe-packs__plan label {
+  padding-block: 10px;
+  margin-block: -10px;
+}
+.vibe-footer .vibe-footer__field input.vibe-footer__input {
+  padding-block: 12px;
+  margin-block: -12px;
+}
+.vibe-footer__list a {
+  padding-block: 6px;
+  margin-block: -6px;
+}
+.vibe-sub__signin {
+  display: inline-block;
+  padding: 8px 2px;
+  margin: -8px -2px;
 }

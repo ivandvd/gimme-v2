@@ -169,7 +169,8 @@ function Carousel({ hover }: { hover: boolean }) {
             aria-label={`Show ${product.name}`}
             aria-current={index === active ? "true" : undefined}
             onClick={() => goTo(index)}
-            className="flex h-5 w-3.5 items-center justify-center"
+            /* a 44px-tall, 32px-wide hit area around a 6px dot, for thumbs */
+            className="flex h-11 w-8 items-center justify-center"
           >
             <span
               className={`h-1.5 w-1.5 rounded-full transition-opacity duration-200 bg-(--vibe-fg) ${index === active ? "opacity-100" : "opacity-30"}`}

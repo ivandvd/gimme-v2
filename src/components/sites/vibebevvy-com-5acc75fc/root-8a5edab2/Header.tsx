@@ -391,7 +391,7 @@ export function Header() {
             type="button"
             onClick={() => setMenuOpen(false)}
             aria-label="Close"
-            className="flex h-[34px] w-[34px] items-center justify-center rounded-full border-[1.5px] border-[#1f0229] text-[#1f0229]"
+            className="menu-drawer__close flex h-[34px] w-[34px] items-center justify-center rounded-full border-[1.5px] border-[#1f0229] text-[#1f0229]"
           >
             <CloseIcon />
           </button>

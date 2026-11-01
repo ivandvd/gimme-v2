@@ -54,3 +54,6 @@ __pycache__/
 
 # files the user drops in for processing (renders, photos); not part of the site
 /incoming/
+
+# playwright-mcp screenshots from QA sessions (local only)
+/.playwright-mcp/

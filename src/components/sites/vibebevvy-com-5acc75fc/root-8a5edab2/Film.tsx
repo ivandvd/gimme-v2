@@ -25,9 +25,10 @@ function SpeakerIcon({ muted }: { muted: boolean }) {
  * ribbon and the good stuff: the accordion's bordered, rounded box at 16:9,
  * the width of the page. It plays muted and looped while on screen
  * (browsers allow no sound without a tap) and pauses off screen; the round
- * button at the corner turns the sound on. The file is fetched only once
- * the box comes near the viewport: phones get the 720p cut, the rest the
- * 1080p. Under prefers-reduced-motion it waits for the button.
+ * button at the corner turns the sound on. The file is fetched whole, in
+ * one plain request, once the box comes within a screen and a half, and
+ * played from memory: phones get the 720p cut, the rest the 1080p. Under
+ * prefers-reduced-motion it waits for the button.
  */
 export function Film() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -39,24 +40,54 @@ export function Film() {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const file = `${FILM}/gimme-film-${window.innerWidth < 750 ? 720 : 1080}.mp4`;
     video.muted = true;
-    let loaded = false;
-    const io = new IntersectionObserver(
+    let wanted = false;
+    let cancelled = false;
+    let url: string | null = null;
+    const start = () => {
+      if (wanted && !reduced && video.src) video.play().catch(() => {});
+    };
+    /* One plain request for the whole file, a screen and a half ahead, played
+       from memory. The CDN serves a plain GET from its edge at once, but the
+       range requests a <video> makes to pull a file from an offset go back
+       to the origin at a trickle, and the film would stall. If the fetch
+       fails, the element loads the file itself. */
+    const loader = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) return;
+        loader.disconnect();
+        fetch(file)
+          .then((r) => (r.ok ? r.blob() : Promise.reject(new Error(String(r.status)))))
+          .then((blob) => {
+            if (cancelled) return;
+            url = URL.createObjectURL(blob);
+            video.src = url;
+            start();
+          })
+          .catch(() => {
+            if (cancelled) return;
+            video.src = file;
+            start();
+          });
+      },
+      { rootMargin: "150% 0px" },
+    );
+    const player = new IntersectionObserver(
       ([entry]) => {
         if (!entry) return;
-        if (entry.isIntersecting) {
-          if (!loaded) {
-            loaded = true;
-            video.src = file;
-          }
-          if (!reduced) video.play().catch(() => {});
-        } else if (!video.paused) {
-          video.pause();
-        }
+        wanted = entry.isIntersecting;
+        if (wanted) start();
+        else if (!video.paused) video.pause();
       },
       { rootMargin: "25% 0px" },
     );
-    io.observe(video);
-    return () => io.disconnect();
+    loader.observe(video);
+    player.observe(video);
+    return () => {
+      cancelled = true;
+      loader.disconnect();
+      player.disconnect();
+      if (url) URL.revokeObjectURL(url);
+    };
   }, []);
 
   const toggleSound = () => {
