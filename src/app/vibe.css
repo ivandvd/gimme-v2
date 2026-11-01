@@ -1680,29 +1680,15 @@ html.vibe-loading.vibe-compose #header-group .vibe-marquee-section {
   justify-content: center;
   margin-top: 22px;
 }
-/* the four packs: two across from 750px, four from 1200px; the three
-   softgels: three across from 990px. Cards in a row share its height, and
-   each pins its plan, price and button to the bottom, so those line up
-   whatever sits above them. */
-@media screen and (min-width: 750px) {
-  .vibe-packs:not(.vibe-packs--supplements) .vibe-packs__grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    max-width: none;
-    margin-top: calc(60 / 1440 * 100vw);
-    padding-inline: 1.5625vw;
-  }
-}
+/* three across from 990px: the three packs, and the three softgels. Cards
+   in a row share its height, and each pins its plan, price and button to
+   the bottom, so those line up whatever sits above them. */
 @media screen and (min-width: 990px) {
-  .vibe-packs--supplements .vibe-packs__grid {
+  .vibe-packs__grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     max-width: none;
     margin-top: calc(60 / 1440 * 100vw);
     padding-inline: 1.5625vw;
-  }
-}
-@media screen and (min-width: 1200px) {
-  .vibe-packs:not(.vibe-packs--supplements) .vibe-packs__grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -1746,9 +1732,9 @@ html.vibe-loading.vibe-compose #header-group .vibe-marquee-section {
   margin-left: 6px;
 }
 
-/* ---- the four packs (2026-11-01): a badge on the hero pack's picture, a
-   line of copy under each name, the duo's pair switch, the lineup's mix as a
-   row of chips, and its picker, which opens over the card's lower half so
+/* ---- the three packs (2026-11-01): a badge on the hero pack's picture, a
+   line of copy under each name, the duo's pair switch, the starter's mix as
+   a row of chips, and its picker, which opens over the card's lower half so
    the row of cards keeps its shape ---- */
 .vibe-packs__badge {
   position: absolute;

@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
-import { DEFAULT_MIX, PACKS, separately, type Pack } from "@/components/sites/vibebevvy-com-5acc75fc/shared/packs";
+import { defaultMix, PACKS, separately, type Pack } from "@/components/sites/vibebevvy-com-5acc75fc/shared/packs";
 import { PillButton } from "@/components/sites/vibebevvy-com-5acc75fc/shared/PillButton";
 import { PRODUCTS } from "@/components/sites/vibebevvy-com-5acc75fc/shared/products";
 import { RevealOnScroll } from "@/components/sites/vibebevvy-com-5acc75fc/shared/RevealOnScroll";
@@ -15,8 +15,6 @@ const IMAGE_SIZES = "(min-width: 1200px) 24vw, (min-width: 750px) 47vw, 100vw";
 const money = (value: number) => `$${value.toFixed(2)}`;
 /* "Gimme Energy" is "Energy" in the picker, where the section already says gimme */
 const short = (name: string) => name.replace(/^Gimme /, "");
-/* the balanced mix for a size: 3/3/2/2/2 per dozen */
-const mixFor = (count: number) => DEFAULT_MIX.map((n) => (n * count) / 12);
 
 function PackCard({ pack }: { pack: Pack }) {
   const picks = pack.kind === "mix";
@@ -24,7 +22,7 @@ function PackCard({ pack }: { pack: Pack }) {
   const [quantity, setQuantity] = useState(1);
   const [subscribe, setSubscribe] = useState(true);
   const [status, setStatus] = useState<"idle" | "adding" | "added">("idle");
-  const [mix, setMix] = useState(() => (picks ? mixFor(pack.sizes[0].count) : []));
+  const [mix, setMix] = useState(() => (picks ? defaultMix(pack.sizes[0].count) : []));
   /* the picker opens over the card, so the row of cards keeps its shape */
   const [mixOpen, setMixOpen] = useState(false);
   const [option, setOption] = useState(0);
@@ -39,6 +37,8 @@ function PackCard({ pack }: { pack: Pack }) {
   const size = pack.sizes[sizeIndex];
   const chosen = mix.reduce((sum, n) => sum + n, 0);
   const missing = picks ? size.count - chosen : 0;
+  /* the line under the name says "two of each" until the mix is changed */
+  const untouched = !picks || mix.every((n, i) => n === defaultMix(size.count)[i]);
   const unit = subscribe ? Math.round(size.price * (1 - SUBSCRIBE_OFF) * 100) / 100 : size.price;
   const total = unit * quantity;
   /* a set says what it saves against its contents bought one by one */
@@ -50,7 +50,7 @@ function PackCard({ pack }: { pack: Pack }) {
 
   const chooseSize = (index: number) => {
     setSizeIndex(index);
-    if (picks) setMix(mixFor(pack.sizes[index].count));
+    if (picks) setMix(defaultMix(pack.sizes[index].count));
   };
   const bump = (i: number, by: 1 | -1) => setMix((m) => m.map((n, j) => (j === i ? n + by : n)));
 
@@ -78,7 +78,7 @@ function PackCard({ pack }: { pack: Pack }) {
       <div className="vibe-packs__body" data-vibe-reveal="">
         <span className="vibe-reveal__inner">
           <h3 className="vibe-packs__name">{pack.name}</h3>
-          <p className="vibe-packs__contents">{pack.contents}</p>
+          <p className="vibe-packs__contents">{untouched ? pack.contents : `Your mix of ${size.count}`}</p>
         </span>
       </div>
       <p className="vibe-packs__blurb">{pack.blurb}</p>
@@ -131,7 +131,7 @@ function PackCard({ pack }: { pack: Pack }) {
             </span>
           ))}
           <button type="button" className="vibe-packs__mix-toggle" onClick={() => setMixOpen(true)} aria-expanded={mixOpen}>
-            Change
+            Customize
           </button>
         </div>
       ) : null}
@@ -212,12 +212,12 @@ function PackCard({ pack }: { pack: Pack }) {
 
 /**
  * The packs, in the slot vibebevvy.com uses for the scroll-scrubbed spinning
- * can: one to try (the starter), one to live on (the lineup, pick your own
- * mix), a set with the softgels in (the glow set) and the softgels in pairs
- * (the duo). Same section rhythm as the rest of the page: 150/1440vw of top
- * padding, a mono eyebrow, the display heading with the scroll wipe, four
- * bordered, rounded media boxes (the accordion's box) with their price and
- * button pinned to the same line, then a plan note and the blob button.
+ * can: the starter (ten drinks, two of each or your own mix), a set with the
+ * softgels in (the glow set) and the softgels in pairs (the duo). Same
+ * section rhythm as the rest of the page: 150/1440vw of top padding, a mono
+ * eyebrow, the display heading with the scroll wipe, three bordered, rounded
+ * media boxes (the accordion's box) with their price and button pinned to
+ * the same line, then a plan note and the blob button.
  */
 export function VarietyPacks() {
   return (

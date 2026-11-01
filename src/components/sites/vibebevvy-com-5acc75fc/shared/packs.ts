@@ -1,4 +1,4 @@
-import { UNIT_PRICE } from "./products";
+import { PRODUCTS, UNIT_PRICE } from "./products";
 import { SUPPLEMENT_PRICE } from "./supplements";
 
 export const PACKS_BASE = "/sites/vibebevvy-com-5acc75fc/shared/packs";
@@ -43,42 +43,32 @@ export interface Pack {
   sizes: PackSize[];
 }
 
-/** the balanced mix a pick-your-own pack starts with, per 12 drinks, in PRODUCTS order */
-export const DEFAULT_MIX = [3, 3, 2, 2, 2];
+/** the mix a pick-your-own pack starts with: an even split of the five, any
+    remainder going to the first flavours (ten is two of each) */
+export function defaultMix(count: number): number[] {
+  const base = Math.floor(count / 5);
+  const extra = count % 5;
+  return PRODUCTS.map((_, i) => base + (i < extra ? 1 : 0));
+}
 
-/* The four packs (2026-11-01): one to try, one to live on, a set with the
-   softgels in, and the softgels in pairs. The Starter Pack, the Glow Set and
-   the Supplement Duo are the owner's renders (scripts/square-pack.py frames
-   them); the Lineup's picture is a stand-in composed from the cut-outs
-   (scripts/compose-pack.py) until its render arrives. Prices are placeholders
-   on the ladder he agreed: the starter at the single price, the 12 about a
-   tenth under, the 24 about a fifth under, a set about an eighth under its
+/* The three packs (2026-11-01): the Starter Pack (ten drinks, two of each or
+   your own mix), the Glow Set (drinks with the softgels in) and the
+   Supplement Duo (the softgels in pairs). All three are the owner's renders,
+   framed by scripts/square-pack.py. Prices are placeholders on the ladder he
+   agreed: the starter at the single price, a set about an eighth under its
    contents bought apart. House rule: the word "can" never appears in copy. */
 export const PACKS: Pack[] = [
   {
     id: "starter-pack",
-    kind: "fixed",
+    kind: "mix",
     name: "Starter Pack",
     contents: "Two of each, try all five",
-    blurb: "Every flavour twice over, so you find your favourite.",
+    blurb: "Two of each to start, or set your own mix of ten.",
+    badge: "Most popular",
     image: `${PACKS_BASE}/starter-pack.jpg`,
     hoverImage: `${PACKS_BASE}/starter-pack-angle.jpg`,
     alt: "The gimme Starter Pack: a cream carton with a lavender lid and the five drinks showing through its window",
     sizes: [{ label: "10-pack", count: 10, price: 24.99 }],
-  },
-  {
-    id: "the-lineup",
-    kind: "mix",
-    name: "The Lineup",
-    contents: "Your mix of the five",
-    blurb: "Twelve or twenty-four, in whatever mix you like.",
-    image: `${PACKS_BASE}/the-lineup-stand-in.jpg`,
-    alt: "The five gimme drinks in a row, Calm in front",
-    badge: "Most popular",
-    sizes: [
-      { label: "12-pack", count: 12, price: 26.99 },
-      { label: "24-pack", count: 24, price: 49.99 },
-    ],
   },
   {
     id: "glow-set",
