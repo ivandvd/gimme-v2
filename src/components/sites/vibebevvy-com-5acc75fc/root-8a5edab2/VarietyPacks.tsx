@@ -3,54 +3,12 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
+import { PACKS, type Pack } from "@/components/sites/vibebevvy-com-5acc75fc/shared/packs";
 import { PillButton } from "@/components/sites/vibebevvy-com-5acc75fc/shared/PillButton";
 import { RevealOnScroll } from "@/components/sites/vibebevvy-com-5acc75fc/shared/RevealOnScroll";
 
-const PACKS_BASE = "/sites/vibebevvy-com-5acc75fc/shared/packs";
 const SUBSCRIBE_OFF = 0.2;
 const HEADING = "Why pick one? Get them all.";
-
-interface PackSize {
-  label: string;
-  count: number;
-  price: number;
-}
-
-interface Pack {
-  id: string;
-  name: string;
-  contents: string;
-  image: string;
-  alt: string;
-  sizes: PackSize[];
-}
-
-/* Prices are placeholders at about $2.40 a drink against the $2.49 single.
-   House rule: the word "can" never appears in copy. */
-const PACKS: Pack[] = [
-  {
-    id: "the-lineup",
-    name: "The Lineup",
-    contents: "One of each",
-    image: `${PACKS_BASE}/the-lineup-clean.jpg`,
-    alt: "The Lineup carton with one of each gimme drink visible through the window, and the Energy drink standing in front",
-    sizes: [
-      { label: "5-pack", count: 5, price: 11.99 },
-      { label: "10-pack", count: 10, price: 22.99 },
-    ],
-  },
-  {
-    id: "day-and-night",
-    name: "Day & Night",
-    contents: "Two each of Energy, Focus, Calm and Sleep",
-    image: `${PACKS_BASE}/day-and-night-clean.jpg`,
-    alt: "Energy, Focus, Calm and Sleep drinks standing together on a periwinkle backdrop",
-    sizes: [
-      { label: "8-pack", count: 8, price: 18.99 },
-      { label: "16-pack", count: 16, price: 35.99 },
-    ],
-  },
-];
 
 const money = (value: number) => `$${value.toFixed(2)}`;
 

@@ -2958,7 +2958,8 @@ button.vibe-btn {
   text-decoration: none;
   width: fit-content;
 }
-.vibe-mega__link:hover {
+.vibe-mega__link:hover,
+.vibe-mega__link.is-active {
   color: #db98f9;
 }
 .vibe-mega__link--bottom {
@@ -3032,6 +3033,24 @@ button.vibe-btn {
   gap: 1vw;
   text-decoration: none;
   min-width: 0;
+  /* a group's tiles rise in one after the other when a name is hovered */
+  animation: vibe-mega-tile-in 0.28s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: calc(var(--i, 0) * 35ms);
+}
+@keyframes vibe-mega-tile-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .vibe-mega__tile {
+    animation: none;
+  }
 }
 .vibe-mega__tile-media {
   position: relative;
