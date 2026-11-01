@@ -45,8 +45,8 @@ function SupplementCard({ supplement }: { supplement: VibeSupplement }) {
     <article className="vibe-packs__card">
       <div className="vibe-packs__media">
         <Image src={supplement.primaryImage} alt={supplement.name} fill sizes={IMAGE_SIZES} quality={85} />
-        {/* the open jar with its ingredient, over the cut-out on hover; where
-            there is no hover it shows from the start */}
+        {/* the studio shot of the jar, over the cut-out on hover, as the on-ice
+            shot sits over a can; touch screens keep the cut-out */}
         <Image className="vibe-packs__scene" src={supplement.hoverImage} alt={supplement.sceneAlt} fill sizes={IMAGE_SIZES} quality={85} />
       </div>
 

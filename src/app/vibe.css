@@ -1697,6 +1697,22 @@ html.vibe-loading.vibe-compose #header-group .vibe-marquee-section {
    three jars across the whole row. The box shows the jar cut-out on the
    cream; the open-jar scene sits over it and fades in on hover, like the
    drinks' on-ice shots, and stays on where there is no hover. ---- */
+/* the supplements get the drinks' treatment (the owner's call, 2026-11-01):
+   no box, the jar cut-out floats on the page, and on hover the studio shot
+   fades in as a rounded tile while the whole thing lifts, like a can and its
+   on-ice shot. Touch screens keep the jar, as the cans keep theirs. */
+.vibe-packs--supplements .vibe-packs__media {
+  border: 0;
+  background: transparent;
+  transition: transform 0.55s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.vibe-packs--supplements .vibe-packs__card:hover .vibe-packs__media img {
+  transform: none;
+}
+.vibe-packs--supplements .vibe-packs__card:hover .vibe-packs__media,
+.vibe-packs--supplements .vibe-packs__card:focus-within .vibe-packs__media {
+  transform: scale(1.06) translateY(-6px);
+}
 .vibe-packs__media .vibe-packs__scene {
   opacity: 0;
   transition:
@@ -1707,11 +1723,9 @@ html.vibe-loading.vibe-compose #header-group .vibe-marquee-section {
 .vibe-packs__card:focus-within .vibe-packs__scene {
   opacity: 1;
 }
-@media (hover: none) {
-  .vibe-packs__media .vibe-packs__scene {
-    opacity: 1;
-  }
-}
+/* (touch screens used to show the scene from the start; now they keep the
+   jar, as the cans keep theirs, and a tap into the card's controls reveals
+   the scene through :focus-within) */
 @media screen and (min-width: 990px) {
   .vibe-packs--supplements .vibe-packs__grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
