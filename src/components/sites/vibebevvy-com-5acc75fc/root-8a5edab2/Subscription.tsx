@@ -10,7 +10,7 @@ import { useVibeParallax } from "@/components/sites/vibebevvy-com-5acc75fc/share
 /* His fridge shot (a hand reaching for Focus on a shelf of the lineup),
    through the house grade. The 2026-10-31 version is landscape, so the box
    shows its middle: Calm, Focus in hand, Sleep. */
-const PHOTO = "/sites/vibebevvy-com-5acc75fc/shared/photos/gimme-subscription-fridge-g25.webp";
+const PHOTO = "/sites/vibebevvy-com-5acc75fc/shared/photos/gimme-subscription-fridge-clean.webp";
 
 /* After the "Get Cann on tap" reference: a soft panel with the pitch, the
    blob button and the perks, beside the photo. Words are his ("stay stocked

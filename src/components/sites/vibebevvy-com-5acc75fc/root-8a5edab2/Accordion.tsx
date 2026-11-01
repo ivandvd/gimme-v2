@@ -5,7 +5,7 @@ import { useRef } from "react";
 import { RevealOnScroll } from "@/components/sites/vibebevvy-com-5acc75fc/shared/RevealOnScroll";
 import { useVibeParallax } from "@/components/sites/vibebevvy-com-5acc75fc/shared/useVibeParallax";
 
-const PHOTO = "/sites/vibebevvy-com-5acc75fc/shared/photos/gimme-accordion-calm-g25.webp";
+const PHOTO = "/sites/vibebevvy-com-5acc75fc/shared/photos/gimme-accordion-calm-clean.webp";
 
 /* approved 2026-10-19; same shape as the original ("Everything a cocktail
    should be. Nothing it usually is.") */

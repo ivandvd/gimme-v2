@@ -9,7 +9,7 @@ import { useVibeParallax } from "@/components/sites/vibebevvy-com-5acc75fc/share
 
 /* His beach shot (the pair in the surf at dusk, Gimme Sleep in hand), through
    the house grade. */
-const PHOTO = "/sites/vibebevvy-com-5acc75fc/shared/photos/gimme-cta-beach-g25.webp";
+const PHOTO = "/sites/vibebevvy-com-5acc75fc/shared/photos/gimme-cta-beach-clean.webp";
 
 /* After the "For the bold, the baked, and the blissed out" reference: a
    three-beat headline, a two-line lead, two actions. House rules: the word

@@ -15,10 +15,11 @@ grain (default: keep 25%). Two cases:
   texture does not inflate it. Colour and tone are not touched.
 
 Outputs take a `-g<percent>` suffix in place of `-film` (the hero files gain
-it) so no cache anywhere keeps serving the old files, and the old files are
-removed. Cut-outs (`-film.png`) carry no grain and are left alone.
+it), or `-clean` when no grain is kept, so no cache anywhere keeps serving
+the old files, and the old files are removed. Cut-outs (`-film.png`) carry no
+grain and are left alone.
 
-usage: python -I scripts/regrain.py [--keep 0.25] [--dry-run] [--keep-sources]
+usage: python -I scripts/regrain.py [--keep 0.25] [--sharpen 0.4] [--dry-run] [--keep-sources]
 """
 
 import importlib.util
@@ -28,6 +29,7 @@ from pathlib import Path
 
 import numpy as np
 from PIL import Image, ImageFilter
+from scipy.ndimage import gaussian_filter
 from skimage.restoration import denoise_nl_means
 
 HERE = Path(__file__).resolve().parent
@@ -74,15 +76,20 @@ def fit_strength(original: Image.Image, graded: Image.Image) -> float:
     return round(best[1], 2)
 
 
-def soften_grain(im: Image.Image, keep: float) -> tuple[Image.Image, float]:
-    """Keep `keep` of the file's grain: denoise the luminance gently and blend
-    the file back over it. Chroma planes are untouched."""
+def soften_grain(im: Image.Image, keep: float, sharpen: float = 0.0) -> tuple[Image.Image, float]:
+    """Keep `keep` of the file's grain: denoise the luminance and blend the
+    file back over it. With `keep` 0 the grain goes entirely; `sharpen` is
+    then a gentle unsharp mask on the luminance that gives back the edge
+    contrast the denoiser takes. Chroma planes are untouched."""
     ycc = np.asarray(im.convert("YCbCr")).astype(np.float32) / 255.0
     y = ycc[..., 0]
     sigma = flat_sigma(y)
-    clean = denoise_nl_means(y, h=1.0 * sigma, sigma=sigma, fast_mode=True, patch_size=5, patch_distance=6)
+    clean = denoise_nl_means(y, h=1.0 * sigma, sigma=sigma, fast_mode=True, patch_size=7, patch_distance=9)
+    mixed = keep * y + (1 - keep) * clean
+    if sharpen > 0:
+        mixed = mixed + sharpen * (mixed - gaussian_filter(mixed, 1.0))
     out = ycc.copy()
-    out[..., 0] = np.clip(keep * y + (1 - keep) * clean, 0, 1)
+    out[..., 0] = np.clip(mixed, 0, 1)
     return Image.fromarray((out * 255).round().astype(np.uint8), "YCbCr").convert("RGB"), sigma * 255
 
 
@@ -93,7 +100,9 @@ def targets() -> list[Path]:
 
 def main(argv: list[str]) -> None:
     keep = float(argv[argv.index("--keep") + 1]) if "--keep" in argv else 0.25
-    suffix = f"-g{round(keep * 100)}"
+    # with no grain kept, a gentle sharpen is on unless set to 0
+    sharpen = float(argv[argv.index("--sharpen") + 1]) if "--sharpen" in argv else (0.4 if keep == 0 else 0.0)
+    suffix = "-clean" if keep == 0 else f"-g{round(keep * 100)}"
     dry = "--dry-run" in argv
     keep_sources = "--keep-sources" in argv
     count = 0
@@ -109,8 +118,9 @@ def main(argv: list[str]) -> None:
             out = grade_photo.grade_image(Image.open(original), k, OLD_GRAIN * keep)
             how = f"regraded from {original.name} at {k:.2f}, grain {OLD_GRAIN * keep:.4f}"
         else:
-            out, sigma = soften_grain(graded, keep)
-            how = f"blended {keep:.0%} file + {1 - keep:.0%} denoised (grain was {sigma:.1f})"
+            out, sigma = soften_grain(graded, keep, sharpen)
+            how = (f"denoised, sharpen {sharpen} (grain was {sigma:.1f})" if keep == 0
+                   else f"blended {keep:.0%} file + {1 - keep:.0%} denoised (grain was {sigma:.1f})")
         if not dry:
             grade_photo.save(out, str(dst))
             if not keep_sources:

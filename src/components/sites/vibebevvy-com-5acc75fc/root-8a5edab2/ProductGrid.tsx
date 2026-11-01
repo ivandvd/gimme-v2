@@ -84,7 +84,7 @@ function ProductSlide({ product, hover }: { product: VibeProduct; hover: boolean
         {hover && product.hoverImage ? (
           /* the on-ice shot as a rounded 4:5 tile the height of the can, centred on it */
           <span className="can-ice" aria-hidden="true">
-            <Image src={product.hoverImage} alt="" fill sizes={ICE_SIZES} className="object-cover" draggable={false} />
+            <Image src={product.hoverImage} alt="" fill sizes={ICE_SIZES} quality={85} className="object-cover" draggable={false} />
           </span>
         ) : null}
 

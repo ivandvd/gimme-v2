@@ -6,13 +6,15 @@ export const SUPPLEMENT_BASE = "/sites/vibebevvy-com-5acc75fc/shared/supplements
 export const SUPPLEMENT_PRICE = 24.99;
 const PRICE = `$${SUPPLEMENT_PRICE.toFixed(2)}`;
 
-/* The three softgels (2026-10-31). `primaryImage` is the jar cut-out, graded
-   with scripts/grade-cutout.py at 0.7; `hoverImage` the open jar with its
-   ingredient, graded with scripts/grade-photo.py at 0.8; both 1200x1200.
-   Shared by the supplements section, the search modal and the mega menu, so
-   the names here are the ones that sit next to the drinks: the Glow softgels
-   share their name with the Glow drink and get "Softgels" and their own slug.
-   The lines are the jars' own sublines. */
+/* The three softgels in the owner's pastel jars (2026-11-01 renders).
+   `primaryImage` is the jar cut-out framed on the 1200x1200 card canvas
+   (scripts/cut-jar.py) and graded with scripts/grade-cutout.py at 0.7;
+   `hoverImage` the studio shot of the same jar, graded with
+   scripts/grade-photo.py at 0.8 without grain; sources sit next to them.
+   `color` is the cap's colour. Shared by the supplements section, the search
+   modal and the mega menu, so the names here are the ones that sit next to
+   the drinks: the Glow softgels share their name with the Glow drink and get
+   "Softgels" and their own slug. The lines are the jars' own sublines. */
 export const SUPPLEMENTS: VibeSupplement[] = [
   {
     kind: "supplement",
@@ -21,28 +23,28 @@ export const SUPPLEMENTS: VibeSupplement[] = [
     shortName: "PMS Relief",
     flavorSubtitle: "Mood + bloat + cycle support",
     benefit: "Calcium, magnesium, saffron, vitamins B6 and D3 and vitex, for less bloating and a steadier mood",
-    color: "#983520",
+    color: "#cbb5d9",
     price: PRICE,
     unitPrice: SUPPLEMENT_PRICE,
     count: 60,
-    primaryImage: `${SUPPLEMENT_BASE}/gimme-pms-relief-jar-film.png`,
-    hoverImage: `${SUPPLEMENT_BASE}/gimme-pms-relief-scene-g25.jpg`,
-    sceneAlt: "An open jar of Gimme PMS Relief softgels beside a bowl of saffron threads and a purple crocus",
+    primaryImage: `${SUPPLEMENT_BASE}/gimme-pms-relief-jar-v2-film.png`,
+    hoverImage: `${SUPPLEMENT_BASE}/gimme-pms-relief-scene-v2-clean.jpg`,
+    sceneAlt: "A lavender jar of Gimme PMS Relief softgels with two softgels in front, on a warm studio backdrop",
   },
   {
     kind: "supplement",
     slug: "gimme-glow-softgels",
     name: "Gimme Glow Softgels",
     shortName: "Glow",
-    flavorSubtitle: "Sea moss softgels",
+    flavorSubtitle: "Skin health from within",
     benefit: "Sea moss with collagen peptides, vitamin C and biotin, for hydrated skin and a clear complexion",
-    color: "#223b25",
+    color: "#e4acb2",
     price: PRICE,
     unitPrice: SUPPLEMENT_PRICE,
     count: 60,
-    primaryImage: `${SUPPLEMENT_BASE}/gimme-glow-softgels-jar-film.png`,
-    hoverImage: `${SUPPLEMENT_BASE}/gimme-glow-softgels-scene-g25.jpg`,
-    sceneAlt: "An open jar of Gimme Glow softgels beside golden sea moss and a slice of orange",
+    primaryImage: `${SUPPLEMENT_BASE}/gimme-glow-softgels-jar-v2-film.png`,
+    hoverImage: `${SUPPLEMENT_BASE}/gimme-glow-softgels-scene-v2-clean.jpg`,
+    sceneAlt: "A blush-pink jar of Gimme Glow softgels with three softgels in front, on a warm studio backdrop",
   },
   {
     kind: "supplement",
@@ -51,12 +53,12 @@ export const SUPPLEMENTS: VibeSupplement[] = [
     shortName: "Urinary Health",
     flavorSubtitle: "Cranberry extract, 36 mg PACs",
     benefit: "Cranberry extract standardised to 36 mg of PACs, for the urinary tract and everyday wellness",
-    color: "#3d1b3e",
+    color: "#a5b6a7",
     price: PRICE,
     unitPrice: SUPPLEMENT_PRICE,
     count: 60,
-    primaryImage: `${SUPPLEMENT_BASE}/gimme-urinary-health-jar-film.png`,
-    hoverImage: `${SUPPLEMENT_BASE}/gimme-urinary-health-scene-g25.jpg`,
-    sceneAlt: "An open jar of Gimme Urinary Health softgels beside a bowl of fresh cranberries",
+    primaryImage: `${SUPPLEMENT_BASE}/gimme-urinary-health-jar-v2-film.png`,
+    hoverImage: `${SUPPLEMENT_BASE}/gimme-urinary-health-scene-v2-clean.jpg`,
+    sceneAlt: "A sage-green jar of Gimme Urinary Health softgels with three amber softgels in front, on a warm studio backdrop",
   },
 ];

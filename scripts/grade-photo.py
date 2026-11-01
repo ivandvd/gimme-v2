@@ -3,12 +3,12 @@ slightly muted colour, warm highlights and teal shadows, a hint of halation,
 a soft vignette and a fine grain. Strength 1.0 is the house grade; lower it
 for a lighter touch.
 
-The grain has its own knob, because it reads far stronger on screen than the
-rest of the grade: the first batch (autumn 2026) used 0.028 and looked rough,
-so the house setting is now 0.008, a texture you notice only up close.
-scripts/regrain.py brings already-graded files to it.
+The grain has its own knob and the house setting is now 0: the first batch
+(autumn 2026) used 0.028, which the owner found rough, and on 2026-11-01 he
+asked for clean photos, no grain at all. scripts/regrain.py takes it out of
+already-graded files.
 
-usage: python -I scripts/grade-photo.py <in> <out.jpg> [strength] [--grain 0.008] [--compare out.jpg]
+usage: python -I scripts/grade-photo.py <in> <out.jpg> [strength] [--grain 0] [--compare out.jpg]
 """
 
 import sys
@@ -16,7 +16,7 @@ import sys
 import numpy as np
 from PIL import Image, ImageFilter
 
-GRAIN = 0.008
+GRAIN = 0.0
 
 
 def grade_array(orig: np.ndarray, strength: float = 1.0, grain: float = GRAIN) -> np.ndarray:

@@ -44,10 +44,10 @@ function SupplementCard({ supplement }: { supplement: VibeSupplement }) {
   return (
     <article className="vibe-packs__card">
       <div className="vibe-packs__media">
-        <Image src={supplement.primaryImage} alt={supplement.name} fill sizes={IMAGE_SIZES} />
+        <Image src={supplement.primaryImage} alt={supplement.name} fill sizes={IMAGE_SIZES} quality={85} />
         {/* the open jar with its ingredient, over the cut-out on hover; where
             there is no hover it shows from the start */}
-        <Image className="vibe-packs__scene" src={supplement.hoverImage} alt={supplement.sceneAlt} fill sizes={IMAGE_SIZES} />
+        <Image className="vibe-packs__scene" src={supplement.hoverImage} alt={supplement.sceneAlt} fill sizes={IMAGE_SIZES} quality={85} />
       </div>
 
       <div className="vibe-packs__body" data-vibe-reveal="">

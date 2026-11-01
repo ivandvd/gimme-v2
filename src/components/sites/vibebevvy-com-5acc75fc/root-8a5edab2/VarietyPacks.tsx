@@ -32,7 +32,7 @@ const PACKS: Pack[] = [
     id: "the-lineup",
     name: "The Lineup",
     contents: "One of each",
-    image: `${PACKS_BASE}/the-lineup-g25.jpg`,
+    image: `${PACKS_BASE}/the-lineup-clean.jpg`,
     alt: "The Lineup carton with one of each gimme drink visible through the window, and the Energy drink standing in front",
     sizes: [
       { label: "5-pack", count: 5, price: 11.99 },
@@ -43,7 +43,7 @@ const PACKS: Pack[] = [
     id: "day-and-night",
     name: "Day & Night",
     contents: "Two each of Energy, Focus, Calm and Sleep",
-    image: `${PACKS_BASE}/day-and-night-g25.jpg`,
+    image: `${PACKS_BASE}/day-and-night-clean.jpg`,
     alt: "Energy, Focus, Calm and Sleep drinks standing together on a periwinkle backdrop",
     sizes: [
       { label: "8-pack", count: 8, price: 18.99 },
@@ -81,7 +81,7 @@ function PackCard({ pack }: { pack: Pack }) {
   return (
     <article className="vibe-packs__card">
       <div className="vibe-packs__media">
-        <Image src={pack.image} alt={pack.alt} fill sizes="(min-width: 990px) 31vw, (min-width: 750px) 560px, 100vw" />
+        <Image src={pack.image} alt={pack.alt} fill sizes="(min-width: 990px) 31vw, (min-width: 750px) 560px, 100vw" quality={85} />
       </div>
 
       <div className="vibe-packs__body" data-vibe-reveal="">
