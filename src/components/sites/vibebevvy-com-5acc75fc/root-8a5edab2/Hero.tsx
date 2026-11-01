@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useCallback, useEffect, useRef, useState, type CSSProperties, type RefObject } from "react";
 
 import { PillButton } from "@/components/sites/vibebevvy-com-5acc75fc/shared/PillButton";
@@ -133,21 +134,21 @@ const PHOTOS = "/sites/vibebevvy-com-5acc75fc/shared/photos";
    graded with scripts/grade-photo.py. --pos-m frames phones, --pos-d 750px up. */
 const HERO_SLIDES = [
   {
-    src: `${PHOTOS}/gimme-hero-pool-2.webp`,
+    src: `${PHOTOS}/gimme-hero-pool-2-grade.webp`,
     posMobile: "25% 50%",
     posDesktop: "50% 50%",
     headline: "Sip happens.",
     subhead: "A drink for every kind of day.",
   },
   {
-    src: `${PHOTOS}/gimme-hero-car.webp`,
+    src: `${PHOTOS}/gimme-hero-car-grade.webp`,
     posMobile: "55% 50%",
     posDesktop: "50% 50%",
     headline: "Stay golden.",
     subhead: "A drink for the long way home.",
   },
   {
-    src: `${PHOTOS}/gimme-hero-focus.webp`,
+    src: `${PHOTOS}/gimme-hero-focus-grade.webp`,
     posMobile: "50% 50%",
     posDesktop: "50% 50%",
     headline: "Lock in.",
@@ -155,6 +156,8 @@ const HERO_SLIDES = [
   },
 ];
 const SLIDE_MS = 9000;
+/* the second and third photos are fetched once the first is in (or after this long) */
+const WARM_MS = 2500;
 
 const HERO_VARS = {
   "--vibe-hero-overlay": "#000000",
@@ -173,6 +176,13 @@ export function Hero() {
   const [round, setRound] = useState(0);
   const textRefs = useRef<Array<HTMLDivElement | null>>([]);
   const mounted = useRef(false);
+  /* only the first photo is in the HTML (preloaded, the page's largest paint);
+     the others mount once it has loaded, so they never compete with it */
+  const [warm, setWarm] = useState(false);
+  useEffect(() => {
+    const id = window.setTimeout(() => setWarm(true), WARM_MS);
+    return () => window.clearTimeout(id);
+  }, []);
 
   /* arrows: change the slide and restart the countdown */
   const goTo = useCallback(
@@ -218,22 +228,22 @@ export function Hero() {
         style={HERO_VARS}
       >
         <div ref={imageRef} className="vibe-hero__bgs">
-          {HERO_SLIDES.map((slide, index) => (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              key={slide.src}
-              src={slide.src}
-              alt=""
-              width={1916}
-              height={981}
-              loading="eager"
-              fetchPriority={index === 0 ? "high" : "low"}
-              decoding="async"
-              className={`vibe-hero__bg${index === active ? " is-active" : ""}`}
-              style={{ "--pos-m": slide.posMobile, "--pos-d": slide.posDesktop } as CSSProperties}
-              sizes="100vw"
-            />
-          ))}
+          {HERO_SLIDES.map((slide, index) =>
+            index === 0 || warm ? (
+              <Image
+                key={slide.src}
+                src={slide.src}
+                alt=""
+                fill
+                sizes="100vw"
+                quality={85}
+                priority={index === 0}
+                onLoad={index === 0 ? () => setWarm(true) : undefined}
+                className={`vibe-hero__bg${index === active ? " is-active" : ""}`}
+                style={{ "--pos-m": slide.posMobile, "--pos-d": slide.posDesktop } as CSSProperties}
+              />
+            ) : null,
+          )}
         </div>
         <div className="vibe-hero__overlay" />
 

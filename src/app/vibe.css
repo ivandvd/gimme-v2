@@ -106,12 +106,14 @@ html.lenis body {
   display: inline-block;
   white-space: nowrap;
 }
+/* no will-change here: it would keep a compositor layer per character for the
+   life of the page (hundreds of them); the browser promotes each one for the
+   0.4s of its pop by itself */
 [data-vibe-title] .vibe-title-char {
   display: inline-block;
   transform: scale(0);
   transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.6);
   transition-delay: calc(var(--char-i, 0) * 0.03s);
-  will-change: transform;
 }
 [data-vibe-title].is-in .vibe-title-char {
   transform: scale(1);
@@ -121,7 +123,6 @@ html.lenis body {
   scale: 0;
   transition: scale 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.6);
   transition-delay: var(--vibe-pop-delay, 0s);
-  will-change: scale;
 }
 [data-vibe-pop].is-in {
   scale: 1;
@@ -376,16 +377,21 @@ html.vibe-loading.vibe-compose #header-group .vibe-marquee-section {
   padding-block: var(--vibe-mq-pad, 10px);
   pointer-events: none;
 }
+/* the gap after each content block is padding inside it, not a flex gap on
+   the wrapper, so one loop is exactly half the wrapper and the keyframe can
+   be a plain -50%: a calc() with the gap in it kept the animation on the
+   main thread, recalculating style every frame for the life of the page */
 .vibe-marquee .marquee__wrapper {
   display: flex;
-  gap: var(--marquee-gap);
   width: fit-content;
   white-space: nowrap;
+  will-change: transform;
 }
 .vibe-marquee .marquee__content {
   min-width: max-content;
   display: flex;
   gap: var(--marquee-gap);
+  padding-inline-end: var(--marquee-gap);
 }
 .vibe-marquee .marquee__repeated-items {
   min-width: max-content;
@@ -419,7 +425,7 @@ html.vibe-loading.vibe-compose #header-group .vibe-marquee-section {
 }
 @keyframes marquee-motion {
   to {
-    transform: translate3d(calc(-50% - (var(--marquee-gap) / 2)), 0, 0);
+    transform: translate3d(-50%, 0, 0);
   }
 }
 
@@ -1304,23 +1310,12 @@ html.vibe-loading.vibe-compose #header-group .vibe-marquee-section {
   }
 }
 
-/* ---- cinematic touches on the product row: a faint film grain over the
-   whole section and a soft glow in each can's own colour behind the one in
-   the middle. Tune with the two opacity values. ---- */
+/* ---- cinematic touch on the product row: a soft glow in each can's own
+   colour behind the one in the middle. (A film-grain overlay used to sit on
+   the whole section too; it read as rough, and its blend mode cost the
+   compositor a pass over the section every frame.) ---- */
 .vibe-cans {
   position: relative;
-}
-.vibe-cans::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 5;
-  pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
-  background-size: 240px 240px;
-  mix-blend-mode: overlay;
-  opacity: 0.14;
-  will-change: transform;
 }
 .can-halo {
   position: absolute;
@@ -2831,18 +2826,41 @@ button.vibe-btn {
 /* ---- wavy text marquee (Ribbon.tsx): a thick lavender band on a sine path,
    the line set along it in plum. Used twice, between the packs and the good
    stuff and between the banner and the final call to action; the sections
-   above bring 120-150/1440vw of air, so the margins even that out. ---- */
+   above bring 120-150/1440vw of air, so the margins even that out.
+   The drawing is wider than the box and slides as one composited layer;
+   --ribbon-w, -dx, -dy and -dur come from the component's layout(). One
+   drawing unit is --ribbon-u: the box is 1920 units across, except on phones,
+   where the band is drawn bigger than that and cut at the right, as before. ---- */
 .vibe-ribbon {
   position: relative;
   z-index: 1;
   margin-block: calc(-50 / 1440 * 100vw) calc(70 / 1440 * 100vw);
+  height: clamp(130px, 15.625vw, 300px);
   pointer-events: none;
   overflow: hidden;
+  container-type: inline-size;
+  --ribbon-u: max(calc(100cqw / 1920), calc(clamp(130px, 15.625vw, 300px) / 300));
 }
 .vibe-ribbon svg {
   display: block;
-  width: 100%;
-  height: clamp(130px, 15.625vw, 300px);
+  width: calc(var(--ribbon-u) * var(--ribbon-w, 1920));
+  height: calc(var(--ribbon-u) * 300);
+  overflow: visible;
+  will-change: transform;
+  animation: vibe-ribbon-run var(--ribbon-dur, 30s) linear infinite;
+}
+.vibe-ribbon--mirror svg {
+  animation-direction: reverse;
+}
+@keyframes vibe-ribbon-run {
+  to {
+    transform: translate(var(--ribbon-dx, -50%), var(--ribbon-dy, 0%));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .vibe-ribbon svg {
+    animation: none;
+  }
 }
 .vibe-ribbon__band {
   fill: none;

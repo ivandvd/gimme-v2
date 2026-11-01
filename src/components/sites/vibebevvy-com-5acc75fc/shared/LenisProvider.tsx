@@ -18,8 +18,29 @@ export function LenisProvider({ children }: { children: ReactNode }) {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
     const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
     let lenis: Lenis | null = null;
+    let frame = 0;
+
+    /* Lenis's own loop (autoRaf) would run every frame for the life of the
+       page and keep the renderer in a per-frame commit even when nothing
+       moves. This one runs only while a scroll is in flight: woken by input,
+       it stops once Lenis reports the scroll settled. The clock is reset on
+       waking so the first frame after a pause is a normal step, not a jump
+       to the target. */
+    const loop = (time: number) => {
+      frame = 0;
+      if (!lenis) return;
+      lenis.raf(time);
+      if (lenis.isScrolling || lenis.targetScroll !== lenis.animatedScroll) frame = requestAnimationFrame(loop);
+    };
+    const wake = () => {
+      if (frame || !lenis) return;
+      lenis.time = performance.now();
+      frame = requestAnimationFrame(loop);
+    };
 
     const destroy = () => {
+      cancelAnimationFrame(frame);
+      frame = 0;
       lenis?.destroy();
       lenis = null;
     };
@@ -27,7 +48,7 @@ export function LenisProvider({ children }: { children: ReactNode }) {
       destroy();
       if (reduced.matches || !finePointer.matches) return;
       lenis = new Lenis({
-        autoRaf: true,
+        autoRaf: false,
         smoothWheel: true,
         lerp: 0.1,
         syncTouch: false,
@@ -35,6 +56,7 @@ export function LenisProvider({ children }: { children: ReactNode }) {
         prevent: (node) => node.matches(NESTED),
         virtualScroll: ({ deltaX, deltaY, event }) => !event.ctrlKey && Math.abs(deltaY) >= Math.abs(deltaX),
       });
+      lenis.on("virtual-scroll", wake);
     };
     const cancelInertia = () => {
       if (lenis && !lenis.isStopped) lenis.scrollTo(lenis.actualScroll, { immediate: true });

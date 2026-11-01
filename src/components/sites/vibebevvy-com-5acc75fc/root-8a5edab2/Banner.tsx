@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useRef } from "react";
 
 import { RevealOnScroll } from "@/components/sites/vibebevvy-com-5acc75fc/shared/RevealOnScroll";
@@ -7,7 +8,7 @@ import { useVibeParallax } from "@/components/sites/vibebevvy-com-5acc75fc/share
 
 /* His orchard shot (mango on the right third, soft foliage on the left),
    through the house grade. */
-const PHOTO = "/sites/vibebevvy-com-5acc75fc/shared/photos/banner-orchard-film.webp";
+const PHOTO = "/sites/vibebevvy-com-5acc75fc/shared/photos/banner-orchard-grade.webp";
 
 /* The paper card and the quote, in the voice of the Charlie's Organics
    reference he sent, with gimme's approved claims only (real fruit, zero
@@ -52,8 +53,7 @@ export function Banner() {
             className="vibe-banner__media vibe-banner__media--story vibe-parallax"
             data-vibe-scroll-effect="parallax"
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img ref={imageRef} src={PHOTO} width={1704} height={923} sizes="97vw" alt="" loading="lazy" />
+            <Image ref={imageRef} src={PHOTO} width={1704} height={923} sizes="97vw" alt="" />
 
             <div className="vibe-banner__card">
               <RevealOnScroll as="h2" className="vibe-banner__headline">

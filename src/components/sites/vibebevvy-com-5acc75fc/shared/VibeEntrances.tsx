@@ -126,10 +126,16 @@ export function VibeEntrances() {
       arm();
     }
 
-    // late-mounted sections (client components hydrating after us) get picked up here
+    // late-mounted sections (client components hydrating after us) get picked up
+    // here; one pass per frame however many mutations arrive
+    let sweep: number | null = null;
     const mo = new MutationObserver(() => {
-      prepare();
-      observeAll();
+      if (sweep !== null) return;
+      sweep = requestAnimationFrame(() => {
+        sweep = null;
+        prepare();
+        observeAll();
+      });
     });
     mo.observe(document.body, { childList: true, subtree: true });
 
@@ -138,6 +144,7 @@ export function VibeEntrances() {
 
     return () => {
       mo.disconnect();
+      if (sweep !== null) cancelAnimationFrame(sweep);
       document.removeEventListener("vibe:loader-done", go);
       document.removeEventListener("vibe:pt-revealed", go);
       clearTimeout(loaderTimer);

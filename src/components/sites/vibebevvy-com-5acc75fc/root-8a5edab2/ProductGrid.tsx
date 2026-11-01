@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Suspense, useCallback, useRef, useState, type CSSProperties } from "react";
+import { Suspense, useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 import { A11y, EffectCoverflow, Keyboard } from "swiper/modules";
 import { Swiper, SwiperSlide, type SwiperClass } from "swiper/react";
 
@@ -46,9 +46,23 @@ function PlusIcon() {
   );
 }
 
+/* the on-ice tile only ever shows under a pointer, so touch devices are
+   spared its ten images */
+function useCanHover() {
+  const [can, setCan] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(hover: hover) and (pointer: fine)");
+    const apply = () => setCan(mq.matches);
+    apply();
+    mq.addEventListener("change", apply);
+    return () => mq.removeEventListener("change", apply);
+  }, []);
+  return can;
+}
+
 /* Liquid Death style slide: can floating on the page, centered text under it,
    price as a small pill. No box, no border. */
-function ProductSlide({ product }: { product: VibeProduct }) {
+function ProductSlide({ product, hover }: { product: VibeProduct; hover: boolean }) {
   return (
     <Link
       href={`/products/${product.slug}`}
@@ -67,7 +81,7 @@ function ProductSlide({ product }: { product: VibeProduct }) {
           className="object-contain"
           draggable={false}
         />
-        {product.hoverImage ? (
+        {hover && product.hoverImage ? (
           /* the on-ice shot as a rounded 4:5 tile the height of the can, centred on it */
           <span className="can-ice" aria-hidden="true">
             <Image src={product.hoverImage} alt="" fill sizes={ICE_SIZES} className="object-cover" draggable={false} />
@@ -104,7 +118,7 @@ function ProductSlide({ product }: { product: VibeProduct }) {
    1.75 slides per view on phones (1.62 here, tuned so a fifth of each
    neighbour shows), 2.75 from 768px and 3.75 from 1280px, with the image box
    fixed at ~200px so the gaps stay wide. */
-function Carousel() {
+function Carousel({ hover }: { hover: boolean }) {
   const swiperRef = useRef<SwiperClass | null>(null);
   const [active, setActive] = useState(0);
 
@@ -142,7 +156,7 @@ function Carousel() {
       >
         {SLIDES.map((product, index) => (
           <SwiperSlide key={`${product.slug}-${index < COUNT ? "a" : "b"}`}>
-            <ProductSlide product={product} />
+            <ProductSlide product={product} hover={hover} />
           </SwiperSlide>
         ))}
       </Swiper>
@@ -170,7 +184,7 @@ function Carousel() {
 /* Static stand-in with the carousel's resting geometry (last product, first
    product centered, second product) so the streamed-in Swiper lands without a
    jump. */
-function CarouselFallback() {
+function CarouselFallback({ hover }: { hover: boolean }) {
   const resting = [PRODUCTS[COUNT - 1], PRODUCTS[0], PRODUCTS[1]];
   return (
     <div className="flex items-start justify-center gap-4 overflow-hidden md:gap-10" aria-hidden="true">
@@ -179,7 +193,7 @@ function CarouselFallback() {
           key={product.slug}
           className={`w-[calc((100%-10px)/1.62)] shrink-0 md:w-[calc((100%-70px)/2.75)] xl:w-[calc((100%-110px)/3.75)] ${index === 1 ? "" : "scale-90"}`}
         >
-          <ProductSlide product={product} />
+          <ProductSlide product={product} hover={hover} />
         </div>
       ))}
     </div>
@@ -187,6 +201,7 @@ function CarouselFallback() {
 }
 
 export function ProductGrid() {
+  const hover = useCanHover();
   return (
     <section className="vibe-cans w-full overflow-hidden bg-(--vibe-bg) pb-10 [padding-block-start:calc(110/1440*100vw)]">
       {/* one calm slide-up for the whole heading (the letter pop wobbled at this size) */}
@@ -201,8 +216,8 @@ export function ProductGrid() {
       <div className="[margin-block-start:40px] min-[750px]:[margin-block-start:calc(60/1440*100vw)]">
         {/* Swiper reads the clock while it mounts, which Next refuses to bake
             into the static prerender; the boundary lets it stream instead. */}
-        <Suspense fallback={<CarouselFallback />}>
-          <Carousel />
+        <Suspense fallback={<CarouselFallback hover={hover} />}>
+          <Carousel hover={hover} />
         </Suspense>
       </div>
 

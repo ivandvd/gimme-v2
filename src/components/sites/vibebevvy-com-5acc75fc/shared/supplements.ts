@@ -26,7 +26,7 @@ export const SUPPLEMENTS: VibeSupplement[] = [
     unitPrice: SUPPLEMENT_PRICE,
     count: 60,
     primaryImage: `${SUPPLEMENT_BASE}/gimme-pms-relief-jar-film.png`,
-    hoverImage: `${SUPPLEMENT_BASE}/gimme-pms-relief-scene-film.jpg`,
+    hoverImage: `${SUPPLEMENT_BASE}/gimme-pms-relief-scene-grade.jpg`,
     sceneAlt: "An open jar of Gimme PMS Relief softgels beside a bowl of saffron threads and a purple crocus",
   },
   {
@@ -41,7 +41,7 @@ export const SUPPLEMENTS: VibeSupplement[] = [
     unitPrice: SUPPLEMENT_PRICE,
     count: 60,
     primaryImage: `${SUPPLEMENT_BASE}/gimme-glow-softgels-jar-film.png`,
-    hoverImage: `${SUPPLEMENT_BASE}/gimme-glow-softgels-scene-film.jpg`,
+    hoverImage: `${SUPPLEMENT_BASE}/gimme-glow-softgels-scene-grade.jpg`,
     sceneAlt: "An open jar of Gimme Glow softgels beside golden sea moss and a slice of orange",
   },
   {
@@ -56,7 +56,7 @@ export const SUPPLEMENTS: VibeSupplement[] = [
     unitPrice: SUPPLEMENT_PRICE,
     count: 60,
     primaryImage: `${SUPPLEMENT_BASE}/gimme-urinary-health-jar-film.png`,
-    hoverImage: `${SUPPLEMENT_BASE}/gimme-urinary-health-scene-film.jpg`,
+    hoverImage: `${SUPPLEMENT_BASE}/gimme-urinary-health-scene-grade.jpg`,
     sceneAlt: "An open jar of Gimme Urinary Health softgels beside a bowl of fresh cranberries",
   },
 ];

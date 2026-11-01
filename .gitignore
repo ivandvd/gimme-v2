@@ -48,3 +48,6 @@ AGENTS.md
 
 # research captures of the reference site (local only)
 /docs/
+
+# python bytecode from the image scripts
+__pycache__/

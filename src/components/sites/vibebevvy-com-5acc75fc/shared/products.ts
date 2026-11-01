@@ -18,7 +18,7 @@ export const PRODUCTS: VibeProduct[] = [
     color: "#D6681B",
     price: PRICE,
     primaryImage: `${CAN_BASE}/gimme-energy-can-film.png`,
-    hoverImage: `${CAN_BASE}/gimme-energy-on-ice-film.jpg`,
+    hoverImage: `${CAN_BASE}/gimme-energy-on-ice-grade.jpg`,
   },
   {
     slug: "gimme-focus",
@@ -28,7 +28,7 @@ export const PRODUCTS: VibeProduct[] = [
     color: "#59932A",
     price: PRICE,
     primaryImage: `${CAN_BASE}/gimme-focus-can-film.png`,
-    hoverImage: `${CAN_BASE}/gimme-focus-on-ice-film.jpg`,
+    hoverImage: `${CAN_BASE}/gimme-focus-on-ice-grade.jpg`,
   },
   {
     slug: "gimme-calm",
@@ -38,7 +38,7 @@ export const PRODUCTS: VibeProduct[] = [
     color: "#CF4068",
     price: PRICE,
     primaryImage: `${CAN_BASE}/gimme-calm-can-film.png`,
-    hoverImage: `${CAN_BASE}/gimme-calm-on-ice-film.jpg`,
+    hoverImage: `${CAN_BASE}/gimme-calm-on-ice-grade.jpg`,
   },
   {
     slug: "gimme-sleep",
@@ -48,7 +48,7 @@ export const PRODUCTS: VibeProduct[] = [
     color: "#6459A1",
     price: PRICE,
     primaryImage: `${CAN_BASE}/gimme-sleep-can-film.png`,
-    hoverImage: `${CAN_BASE}/gimme-sleep-on-ice-film.jpg`,
+    hoverImage: `${CAN_BASE}/gimme-sleep-on-ice-grade.jpg`,
   },
   {
     slug: "gimme-glow",
@@ -58,6 +58,6 @@ export const PRODUCTS: VibeProduct[] = [
     color: "#D89D84",
     price: PRICE,
     primaryImage: `${CAN_BASE}/gimme-glow-can-film.png`,
-    hoverImage: `${CAN_BASE}/gimme-glow-on-ice-film.jpg`,
+    hoverImage: `${CAN_BASE}/gimme-glow-on-ice-grade.jpg`,
   },
 ];
