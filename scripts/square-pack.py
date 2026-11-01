@@ -7,12 +7,19 @@ the render keeps that edge as the picture's edge. Then the picture is graded
 like the cut-outs (grade-cutout.py at 0.7: tone and colour only, no vignette
 or grain) and saved as a JPEG.
 
-usage: python -I scripts/square-pack.py [--margin 0.03] [--tall 1.0] <in> <out.jpg> [...more pairs]
+usage: python -I scripts/square-pack.py [--margin 0.03] [--tall 1.0] [--anchor w=0.86,cx=0.5,bottom=0.8] <in> <out.jpg> [...more pairs]
 
 --margin is the air around the box as a share of its longer side; the closed
 cartons sit well at the default, an open box seen from above wants ~0.12.
 --tall is the picture's height as a share of its width: 1 is the square card
 picture, 1.448 the mega menu's 290:420 tile (the extra height is backdrop).
+--anchor frames every picture the same way instead, so a row of cards lines
+up: the box's own sharp outline (not its shadow or blurred lid) is made `w`
+of the picture's width (or `h` of its height, for a turned view that should
+stay the size of the straight-on one), its centre put at `cx` of the width
+and its bottom edge at `bottom` of the height (or its top edge at `top`). A
+box the render cuts off at an edge keeps that edge, since no air can be
+added there; a shadow reaching the edge is continued.
 """
 
 import importlib.util
@@ -40,6 +47,32 @@ MARGIN = 0.03  # of the box's longer side, each side of it
 EDGE = 24  # levels from the backdrop at which a pixel counts as subject
 CUT = 60  # a side of the picture this far from the backdrop's colour is covered by the subject
 TOUCH = 4  # a subject with no more backdrop rows than this above or below it runs off that edge
+SHARP = 18  # lightness gradient (levels per pixel) of the box's own edges; shadow and lid blur stay under it
+
+
+def sharp_box(im: Image.Image) -> tuple[int, int, int, int]:
+    """x0, x1, y0, y1 of the box's crisp outline: a printed carton or an open
+    box has sharp edges, while its shadow and out-of-focus lid flaps only
+    have soft ones, so this is the box as the eye places it."""
+    g = np.asarray(im.convert("L")).astype(np.float32)
+    gy, gx = np.gradient(g)
+    strong = np.hypot(gx, gy) > SHARP
+    h, w = strong.shape
+    cols = np.where(strong.sum(axis=0) > h * 0.01)[0]
+    rows = np.where(strong.sum(axis=1) > w * 0.01)[0]
+    if cols.size == 0 or rows.size == 0:
+        raise SystemExit("no sharp edges found")
+    return int(cols[0]), int(cols[-1]), int(rows[0]), int(rows[-1])
+
+
+def place(length: int, at: float, target: float, side: int) -> tuple[int, int, int, int]:
+    """Along one axis: where to crop from and how long, and how much to add
+    before and after, so that render position `at` lands `target` pixels
+    into a picture `side` long."""
+    begin = int(round(at - target))
+    before = max(0, -begin)
+    after = max(0, begin + side - length)
+    return max(0, begin), side - before - after, before, after
 
 
 def subject_box(img: np.ndarray) -> tuple[int, int, int, int, np.ndarray]:
@@ -116,26 +149,50 @@ def pad(crop: Image.Image, top: int, bottom: int, above: int, below: int) -> Ima
     return Image.fromarray(arr.clip(0, 255).astype(np.uint8))
 
 
-def square(src: str, dst: str, margin: float = MARGIN, tall: float = 1.0) -> None:
+def square(src: str, dst: str, margin: float = MARGIN, tall: float = 1.0, anchor: dict[str, float] | None = None) -> None:
     im = Image.open(src).convert("RGB")
     img = np.asarray(im).astype(np.int16)
-    x0, x1, y0, y1, _ = subject_box(img)
+    sx0, sx1, sy0, sy1, dev = subject_box(img)
     w, h = im.size
-    side = int(round(max(x1 - x0 + 1, y1 - y0 + 1) * (1 + 2 * margin)))
-    side = min(side, max(w, h))
-    height = int(round(side * tall))
-    cx, left, right = fit(w, x0, x1, side)
-    cy, top, bottom = fit(h, y0, y1, height)
-    crop_h = min(height, h)
+    if anchor:
+        x0, x1, y0, y1 = sharp_box(im)
+        # the box's size in the picture: by its width, or by its height (`h`),
+        # which keeps a turned carton the size of its straight-on view
+        side = int(round((y1 - y0 + 1) / anchor["h"] if "h" in anchor else (x1 - x0 + 1) / anchor.get("w", 0.86)))
+        height = int(round(side * tall))
+        cx, crop_w, left, right = place(w, (x0 + x1 + 1) / 2, anchor.get("cx", 0.5) * side, side)
+        if "top" in anchor:
+            cy, crop_h, top, bottom = place(h, y0, anchor["top"] * height, height)
+        else:
+            cy, crop_h, top, bottom = place(h, y1 + 1, anchor.get("bottom", 0.8) * height, height)
+        # a box the render cuts off at its top or bottom keeps that edge, since
+        # a band there would show it cut off in mid-air. Only the box counts:
+        # its faint shadow reaching the edge continues into the band fine
+        cut_top = sy0 <= TOUCH and (y0 <= TOUCH or dev[: TOUCH + 1].max() > 2 * EDGE)
+        cut_bottom = h - 1 - sy1 <= TOUCH and (h - 1 - y1 <= TOUCH or dev[-(TOUCH + 1) :].max() > 2 * EDGE)
+        if top and cut_top:
+            cy, crop_h, top, bottom = place(h, 0, 0, height)
+            print(f"  note: {Path(src).name} runs off the top (edge rows {dev[: TOUCH + 1].max()} from the backdrop), so its lid stays at the picture's edge")
+        if bottom and cut_bottom:
+            cy, crop_h, top, bottom = place(h, h, height, height)
+            print(f"  note: {Path(src).name} runs off the bottom (edge rows {dev[-(TOUCH + 1) :].max()} from the backdrop), so it stays at the picture's edge")
+    else:
+        x0, x1, y0, y1 = sx0, sx1, sy0, sy1
+        side = int(round(max(x1 - x0 + 1, y1 - y0 + 1) * (1 + 2 * margin)))
+        side = min(side, max(w, h))
+        height = int(round(side * tall))
+        cx, left, right = fit(w, x0, x1, side)
+        cy, top, bottom = fit(h, y0, y1, height)
+        crop_w, crop_h = min(side, w), min(height, h)
     # the backdrop rows above and below the subject within the crop: what a
     # band is made from. A subject that runs off the top or the bottom of the
     # render keeps that edge as the picture's edge, with all the added room
     # on the other side: a band there would show it cut off in mid-air
-    above = y0 - cy
-    below = cy + crop_h - 1 - y1
-    if top + bottom and (above <= TOUCH) != (below <= TOUCH):
+    above = sy0 - cy
+    below = cy + crop_h - 1 - sy1
+    if not anchor and top + bottom and (above <= TOUCH) != (below <= TOUCH):
         top, bottom = (0, top + bottom) if above <= TOUCH else (top + bottom, 0)
-    crop = im.crop((cx, cy, cx + min(side, w), cy + crop_h))
+    crop = im.crop((cx, cy, cx + crop_w, cy + crop_h))
     if top or bottom:
         crop = pad(crop, top, bottom, above, below)
     with tempfile.TemporaryDirectory() as tmp:
@@ -151,22 +208,27 @@ def square(src: str, dst: str, margin: float = MARGIN, tall: float = 1.0) -> Non
         grade_cutout.grade_cutout(str(step), str(graded), 0.7)
         out = Image.open(graded).convert("RGB")
         out.save(dst, quality=92, optimize=True, progressive=True)
+    ow, oh = out.size
     print(
-        f"{dst}: box x {x0}-{x1} y {y0}-{y1} of {w}x{h} -> {out.size[0]}x{out.size[1]}, "
-        f"crop from ({cx},{cy}), added {left}/{right} sideways, {top}/{bottom} up and down"
+        f"{dst}: box x {x0}-{x1} y {y0}-{y1} of {w}x{h} -> {ow}x{oh}, "
+        f"crop from ({cx},{cy}), added {left}/{right} sideways, {top}/{bottom} up and down; "
+        f"box in picture: w {(x1 - x0 + 1) / ow:.3f} cx {((x0 + x1 + 1) / 2 - cx + left) / ow:.3f} "
+        f"top {(y0 - cy + top) / oh:.3f} bottom {(y1 + 1 - cy + top) / oh:.3f}"
     )
 
 
 if __name__ == "__main__":
     args = sys.argv[1:]
-    margin, tall = MARGIN, 1.0
-    while args[:1] in (["--margin"], ["--tall"]):
+    margin, tall, anchor = MARGIN, 1.0, None
+    while args[:1] in (["--margin"], ["--tall"], ["--anchor"]):
         if args[0] == "--margin":
             margin = float(args[1])
-        else:
+        elif args[0] == "--tall":
             tall = float(args[1])
+        else:
+            anchor = {k: float(v) for k, v in (part.split("=") for part in args[1].split(","))}
         args = args[2:]
     if len(args) < 2 or len(args) % 2:
         raise SystemExit(__doc__)
     for i in range(0, len(args), 2):
-        square(args[i], args[i + 1], margin, tall)
+        square(args[i], args[i + 1], margin, tall, anchor)
