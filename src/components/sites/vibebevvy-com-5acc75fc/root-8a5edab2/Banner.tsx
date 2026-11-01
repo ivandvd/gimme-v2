@@ -7,7 +7,7 @@ import { useVibeParallax } from "@/components/sites/vibebevvy-com-5acc75fc/share
 
 /* His orchard shot (mango on the right third, soft foliage on the left),
    through the house grade. */
-const PHOTO = "/sites/vibebevvy-com-5acc75fc/shared/photos/banner-orchard-film.webp";
+const PHOTO = "/sites/vibebevvy-com-5acc75fc/shared/photos/banner-orchard-g25.webp";
 
 /* The paper card and the quote, in the voice of the Charlie's Organics
    reference he sent, with gimme's approved claims only (real fruit, zero

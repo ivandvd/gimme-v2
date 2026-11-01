@@ -51,3 +51,6 @@ AGENTS.md
 
 # python bytecode from the image scripts
 __pycache__/
+
+# files the user drops in for processing (renders, photos); not part of the site
+/incoming/

@@ -1,20 +1,24 @@
-"""Bring every graded photo under public/.../shared to the lighter house grain
-(see grade-photo.py). Two cases:
+"""Bring every graded photo under public/.../shared to a fraction of its
+grain (default: keep 25%). Two cases:
 
 * the un-graded original sits next to the graded file (the avatars, the packs,
   the supplement scenes, the Calm accordion photo): the grade is applied again
   from the original, at the strength that best matches the existing file, with
-  the new grain;
+  the grain scaled down;
 * only the graded file exists (the three hero photos, the banner, beach and
   fridge shots, the on-ice tiles, the social cards, the benefit covers): the
-  old grain is taken out of the luminance with non-local means and the finer
-  grain is laid on top. Colour and tone are left as they are.
+  luminance is denoised with non-local means and the result blended with the
+  file, `keep` parts file to `1 - keep` parts denoised. The file keeps that
+  share of everything, texture included, so nothing is smoothed away as it
+  was in the first, rejected attempt (which removed all grain and added a
+  synthetic one). The grain level is read from flat areas only, so picture
+  texture does not inflate it. Colour and tone are not touched.
 
-Outputs take the `-grade` suffix in place of `-film` (the hero files gain it),
-so no cache anywhere keeps serving the old files, and the old files are
+Outputs take a `-g<percent>` suffix in place of `-film` (the hero files gain
+it) so no cache anywhere keeps serving the old files, and the old files are
 removed. Cut-outs (`-film.png`) carry no grain and are left alone.
 
-usage: python -I scripts/regrain.py [--grain 0.008] [--dry-run] [--keep]
+usage: python -I scripts/regrain.py [--keep 0.25] [--dry-run] [--keep-sources]
 """
 
 import importlib.util
@@ -35,17 +39,25 @@ ROOT = HERE.parent / "public" / "sites" / "vibebevvy-com-5acc75fc" / "shared"
 # graded in place without the -film suffix
 HERO = [ROOT / "photos" / f"gimme-hero-{name}.webp" for name in ("pool-2", "car", "focus")]
 ORIGINAL_EXTS = (".jpg", ".jpeg", ".png", ".webp")
+# the grain the first batch was graded with (grade-photo.py, autumn 2026)
+OLD_GRAIN = 0.028
+
+
+def flat_sigma(y: np.ndarray) -> float:
+    """Noise level of a float 0..1 plane, from its flattest 16x16 blocks: the
+    diagonal Haar detail of white noise has the noise's own sigma, and the
+    blocks with the least of it hold grain and nothing else."""
+    h, w = y.shape
+    e = y[: h // 2 * 2, : w // 2 * 2]
+    detail = (e[0::2, 0::2] - e[0::2, 1::2] - e[1::2, 0::2] + e[1::2, 1::2]) / 2.0
+    bh, bw = detail.shape[0] // 8, detail.shape[1] // 8
+    blocks = detail[: bh * 8, : bw * 8].reshape(bh, 8, bw, 8).std(axis=(1, 3))
+    return float(np.percentile(blocks, 20))
 
 
 def noise_sigma(im: Image.Image) -> float:
-    """Immerkaer's estimate of the noise level in levels of 255 (texture counts too)."""
-    g = np.asarray(im.convert("L")).astype(np.float32)
-    c = (
-        g[:-2, :-2] - 2 * g[:-2, 1:-1] + g[:-2, 2:]
-        - 2 * g[1:-1, :-2] + 4 * g[1:-1, 1:-1] - 2 * g[1:-1, 2:]
-        + g[2:, :-2] - 2 * g[2:, 1:-1] + g[2:, 2:]
-    )
-    return math.sqrt(math.pi / 2) * float(np.abs(c).mean()) / 6.0
+    """Flat-area grain in levels of 255, for the report."""
+    return flat_sigma(np.asarray(im.convert("L")).astype(np.float32) / 255.0) * 255
 
 
 def fit_strength(original: Image.Image, graded: Image.Image) -> float:
@@ -62,21 +74,15 @@ def fit_strength(original: Image.Image, graded: Image.Image) -> float:
     return round(best[1], 2)
 
 
-def regrain(im: Image.Image, grain: float) -> tuple[Image.Image, float]:
-    """Take the old grain out of the luminance and put the fine one on; the
-    chroma planes are untouched. Returns the image and the noise it removed."""
+def soften_grain(im: Image.Image, keep: float) -> tuple[Image.Image, float]:
+    """Keep `keep` of the file's grain: denoise the luminance gently and blend
+    the file back over it. Chroma planes are untouched."""
     ycc = np.asarray(im.convert("YCbCr")).astype(np.float32) / 255.0
     y = ycc[..., 0]
-    h, w = y.shape
-    even = y[: h // 2 * 2, : w // 2 * 2]
-    # Donoho's estimate on the diagonal Haar detail: robust to picture texture
-    detail = (even[0::2, 0::2] - even[0::2, 1::2] - even[1::2, 0::2] + even[1::2, 1::2]) / 2.0
-    sigma = float(np.median(np.abs(detail)) / 0.6745)
-    clean = denoise_nl_means(y, h=0.8 * sigma, sigma=sigma, fast_mode=True, patch_size=5, patch_distance=6)
-    rng = np.random.default_rng(7)
-    amount = 0.55 + 0.45 * (1 - clean)  # as in the grade: a little more in the shadows
+    sigma = flat_sigma(y)
+    clean = denoise_nl_means(y, h=1.0 * sigma, sigma=sigma, fast_mode=True, patch_size=5, patch_distance=6)
     out = ycc.copy()
-    out[..., 0] = np.clip(clean + rng.normal(0, grain, size=y.shape).astype(np.float32) * amount, 0, 1)
+    out[..., 0] = np.clip(keep * y + (1 - keep) * clean, 0, 1)
     return Image.fromarray((out * 255).round().astype(np.uint8), "YCbCr").convert("RGB"), sigma * 255
 
 
@@ -86,32 +92,33 @@ def targets() -> list[Path]:
 
 
 def main(argv: list[str]) -> None:
-    grain = float(argv[argv.index("--grain") + 1]) if "--grain" in argv else grade_photo.GRAIN
+    keep = float(argv[argv.index("--keep") + 1]) if "--keep" in argv else 0.25
+    suffix = f"-g{round(keep * 100)}"
     dry = "--dry-run" in argv
-    keep = "--keep" in argv
-    rows = []
+    keep_sources = "--keep-sources" in argv
+    count = 0
     for src in targets():
         stem = src.name[: -len(src.suffix)]
         base = stem[:-5] if stem.endswith("-film") else stem
-        dst = src.with_name(f"{base}-grade{src.suffix}")
+        dst = src.with_name(f"{base}{suffix}{src.suffix}")
         original = next((c for c in (src.with_name(base + ext) for ext in ORIGINAL_EXTS) if c.exists() and c != src), None)
         graded = Image.open(src).convert("RGB")
         before = noise_sigma(graded)
         if original is not None:
             k = fit_strength(Image.open(original), graded)
-            out = grade_photo.grade_image(Image.open(original), k, grain)
-            how = f"regraded from {original.name} at {k:.2f}"
+            out = grade_photo.grade_image(Image.open(original), k, OLD_GRAIN * keep)
+            how = f"regraded from {original.name} at {k:.2f}, grain {OLD_GRAIN * keep:.4f}"
         else:
-            out, removed = regrain(graded, grain)
-            how = f"denoised (removed sigma {removed:.1f})"
+            out, sigma = soften_grain(graded, keep)
+            how = f"blended {keep:.0%} file + {1 - keep:.0%} denoised (grain was {sigma:.1f})"
         if not dry:
             grade_photo.save(out, str(dst))
-            if not keep:
+            if not keep_sources:
                 src.unlink()
         after = noise_sigma(out)
-        rows.append((str(src.relative_to(ROOT)).replace("\\", "/"), dst.name, before, after, how))
-        print(f"{rows[-1][0]:<52} -> {dst.name:<44} noise {before:5.2f} -> {after:4.2f}  {how}")
-    print(f"{len(rows)} files, grain {grain}{' (dry run)' if dry else ''}")
+        count += 1
+        print(f"{str(src.relative_to(ROOT)).replace(chr(92), '/'):<52} -> {dst.name:<40} grain {before:5.2f} -> {after:4.2f}  {how}")
+    print(f"{count} files, keeping {keep:.0%} of the grain{' (dry run)' if dry else ''}")
 
 
 if __name__ == "__main__":

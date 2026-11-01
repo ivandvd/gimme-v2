@@ -57,7 +57,7 @@ export function Social() {
           {PHOTOS.map((n) => (
             <div key={n} className="vibe-social__card">
               <Image
-                src={`${SOCIAL_BASE}/gimme-social-${n}-film.jpg`}
+                src={`${SOCIAL_BASE}/gimme-social-${n}-g25.jpg`}
                 alt=""
                 fill
                 sizes="(min-width: 750px) 21.56vw, 44vw"
