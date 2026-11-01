@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useRef } from "react";
 
@@ -10,7 +11,7 @@ import { useVibeParallax } from "@/components/sites/vibebevvy-com-5acc75fc/share
 /* His fridge shot (a hand reaching for Focus on a shelf of the lineup),
    through the house grade. The 2026-10-31 version is landscape, so the box
    shows its middle: Calm, Focus in hand, Sleep. */
-const PHOTO = "/sites/vibebevvy-com-5acc75fc/shared/photos/gimme-subscription-fridge-clean.webp";
+const PHOTO = "/sites/vibebevvy-com-5acc75fc/shared/photos/gimme-subscription-fridge-4k.webp";
 
 /* After the "Get Cann on tap" reference: a soft panel with the pitch, the
    blob button and the perks, beside the photo. Words are his ("stay stocked
@@ -87,9 +88,10 @@ export function Subscription() {
         </div>
 
         <div ref={mediaRef} className="vibe-sub__media">
-          {/* the file itself, not the image optimizer: its recompression softened the photo */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img ref={imageRef} src={PHOTO} width={1413} height={1113} sizes="(min-width: 990px) 52vw, 100vw" alt="" loading="lazy" />
+          {/* the owner's 4K render (3840x3093, 5:4) through the optimizer at quality
+              90; the box is about 52vw wide on desktop and the picture overflows it
+              a little, phones show the middle of it */}
+          <Image ref={imageRef} src={PHOTO} width={3840} height={3093} sizes="(min-width: 990px) 65vw, 180vw" quality={90} alt="" />
         </div>
       </div>
     </section>

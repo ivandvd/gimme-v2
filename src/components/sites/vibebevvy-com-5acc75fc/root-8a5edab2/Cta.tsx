@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useRef, type CSSProperties } from "react";
 
@@ -9,7 +10,7 @@ import { useVibeParallax } from "@/components/sites/vibebevvy-com-5acc75fc/share
 
 /* His beach shot (the pair in the surf at dusk, Gimme Sleep in hand), through
    the house grade. */
-const PHOTO = "/sites/vibebevvy-com-5acc75fc/shared/photos/gimme-cta-beach-clean.webp";
+const PHOTO = "/sites/vibebevvy-com-5acc75fc/shared/photos/gimme-cta-beach-4k.webp";
 
 /* After the "For the bold, the baked, and the blissed out" reference: a
    three-beat headline, a two-line lead, two actions. House rules: the word
@@ -36,9 +37,10 @@ export function Cta() {
   return (
     <section className="vibe-cta" aria-label={HEADLINE}>
       <div ref={mediaRef} className="vibe-cta__media">
-        {/* the file itself, not the image optimizer: its recompression softened the photo */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img ref={imageRef} src={PHOTO} width={1916} height={821} sizes="100vw" alt="" loading="lazy" />
+        {/* the owner's 4K render (3840x1629, 21:9) through the optimizer at quality
+            90; the picture covers a box squarer than itself, so it is drawn about
+            1.2x the viewport's width on desktop, and phones show a slice of it */}
+        <Image ref={imageRef} src={PHOTO} width={3840} height={1629} sizes="(max-width: 749px) 800px, 120vw" quality={90} alt="" />
         <div className="vibe-cta__overlay" aria-hidden="true" />
         <div className="vibe-cta__inner">
           <div className="vibe-cta__text">

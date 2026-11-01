@@ -1002,9 +1002,9 @@ html.vibe-loading.vibe-compose #header-group .vibe-marquee-section {
   width: 100%;
   height: 115%;
   object-fit: cover;
-  /* the Calm shot is wider than this box, with the sunglasses at its top edge:
-     lean the crop right and grow the scroll zoom from the top to keep the eyes */
-  object-position: 72% 50%;
+  /* the Calm shot is 4:5 now, the box's own shape, so it sits centred; the
+     scroll zoom still grows from the top so the eyes stay in */
+  object-position: 50% 50%;
   transform-origin: 50% 6.5%;
   will-change: transform;
 }

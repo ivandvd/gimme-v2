@@ -1,11 +1,12 @@
 "use client";
 
+import Image from "next/image";
 import { useRef } from "react";
 
 import { RevealOnScroll } from "@/components/sites/vibebevvy-com-5acc75fc/shared/RevealOnScroll";
 import { useVibeParallax } from "@/components/sites/vibebevvy-com-5acc75fc/shared/useVibeParallax";
 
-const PHOTO = "/sites/vibebevvy-com-5acc75fc/shared/photos/gimme-accordion-calm-clean.webp";
+const PHOTO = "/sites/vibebevvy-com-5acc75fc/shared/photos/gimme-accordion-calm-4k.webp";
 
 /* approved 2026-10-19; same shape as the original ("Everything a cocktail
    should be. Nothing it usually is.") */
@@ -73,16 +74,17 @@ export function Accordion() {
       <section className="vibe-accordion">
         <div className="vibe-accordion__inner">
           <div ref={mediaRef} className="vibe-accordion__media vibe-parallax" data-vibe-scroll-effect="parallax">
-            {/* the file itself, not the image optimizer: its recompression softened the photo */}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            {/* the owner's 4K render (3094x3840, 4:5, the box's own shape) through
+                the optimizer at quality 90, which keeps it as sharp as the file;
+                the box is about 58vw wide on desktop once the scroll zoom is in */}
+            <Image
               ref={imageRef}
               src={PHOTO}
-              width={1322}
-              height={1190}
-              sizes="(min-width: 750px) 48vw, 100vw"
+              width={3094}
+              height={3840}
+              sizes="(min-width: 750px) 58vw, 115vw"
+              quality={90}
               alt="A woman in orange sunglasses sipping a Gimme Calm, White Peach, in the sun"
-              loading="lazy"
             />
           </div>
 
