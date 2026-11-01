@@ -1678,8 +1678,8 @@ html.vibe-loading.vibe-compose #header-group .vibe-marquee-section {
 }
 @media screen and (min-width: 990px) {
   .vibe-packs__grid {
-    /* two packs, centred, each the width of a third of the row */
-    grid-template-columns: repeat(2, calc((100% - 2 * 1.5625vw) / 3));
+    /* three across: the three packs, and the three softgels */
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     justify-content: center;
     max-width: none;
     margin-top: calc(60 / 1440 * 100vw);
@@ -1726,6 +1726,99 @@ html.vibe-loading.vibe-compose #header-group .vibe-marquee-section {
 .vibe-packs--supplements .vibe-packs__each {
   margin-left: 6px;
 }
+
+/* ---- the three packs (2026-11-01): a badge on the hero pack's picture,
+   the pick-your-own-mix list and the softgel switch on the routine ---- */
+.vibe-packs__badge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 1;
+  padding: 7px 12px 5px;
+  border-radius: 999px;
+  background: var(--vibe-fg);
+  color: var(--vibe-bg);
+  font-family: var(--vibe-font-mono);
+  font-size: max(11px, 0.7vw);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+.vibe-packs__softgel {
+  /* the pill style grows to fill the controls row; on its own line in the
+     card's column it must not grow downward */
+  flex: none;
+  margin-top: 10px;
+}
+.vibe-packs__mix-summary {
+  margin: 0;
+  padding: 4px 0 8px;
+  font-family: var(--vibe-font-text);
+  font-size: max(14px, 0.9vw);
+  line-height: 1.4;
+}
+.vibe-packs__mix {
+  margin-top: 14px;
+  padding: 10px 14px 4px;
+  border: 1.5px solid var(--vibe-fg);
+  border-radius: clamp(14px, 1.2vw, 22px);
+}
+.vibe-packs__mix-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 8px;
+  font-family: var(--vibe-font-mono);
+  font-size: max(12px, 0.78vw);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.vibe-packs__mix-head output {
+  font-variant-numeric: tabular-nums;
+}
+.vibe-packs__mix-toggle {
+  border: 0;
+  padding: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+.vibe-packs__mix-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 7px 0;
+  border-top: 1px solid color-mix(in srgb, var(--vibe-fg) 16%, transparent);
+}
+.vibe-packs__mix-row img {
+  width: 22px;
+  height: auto;
+  flex: none;
+}
+.vibe-packs__mix-name {
+  flex: 1;
+  font-family: var(--vibe-font-text);
+  font-size: max(14px, 0.9vw);
+}
+.vibe-packs__stepper--small {
+  height: 34px;
+  font-size: max(12px, 0.72vw);
+}
+.vibe-packs__stepper--small button {
+  width: 32px;
+  font-size: 15px;
+}
+/* a pick-your-own pack waits for its last drinks */
+.vibe-packs__add:disabled:not(.is-adding):not(.is-added) {
+  opacity: 0.5;
+  cursor: default;
+}
 .vibe-packs__media .vibe-packs__scene {
   opacity: 0;
   transition:
@@ -1738,11 +1831,6 @@ html.vibe-loading.vibe-compose #header-group .vibe-marquee-section {
 /* (touch screens used to show the scene from the start; now they keep the
    jar, as the cans keep theirs, and a tap into the card's controls reveals
    the scene through :focus-within) */
-@media screen and (min-width: 990px) {
-  .vibe-packs--supplements .vibe-packs__grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
 @media (prefers-reduced-motion: reduce) {
   .vibe-packs__media .vibe-packs__scene {
     transition: none;
@@ -3070,6 +3158,13 @@ button.vibe-btn {
 }
 .vibe-mega__tile:hover .vibe-mega__tile-media img {
   transform: scale(1.04);
+}
+/* the packs' square pictures, whole on the cream instead of cropped */
+.vibe-mega__tile--contain .vibe-mega__tile-media {
+  background: #efe3d4;
+}
+.vibe-mega__tile--contain .vibe-mega__tile-media img {
+  object-fit: contain;
 }
 .vibe-mega__tile-title {
   font-family: var(--vibe-font-text);
