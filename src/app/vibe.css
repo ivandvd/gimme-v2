@@ -1698,9 +1698,11 @@ html.vibe-loading.vibe-compose #header-group .vibe-marquee-section {
    cream; the open-jar scene sits over it and fades in on hover, like the
    drinks' on-ice shots, and stays on where there is no hover. ---- */
 /* the supplements get the drinks' treatment (the owner's call, 2026-11-01):
-   no box, the jar cut-out floats on the page, and on hover the studio shot
-   fades in as a rounded tile while the whole thing lifts, like a can and its
-   on-ice shot. Touch screens keep the jar, as the cans keep theirs. */
+   no box, the jar cut-out floats on the page with its copy and controls
+   centred under it, and with the pointer on the jar itself (not the name or
+   the cart button) the studio shot fades in as a rounded tile while the jar
+   lifts, like a can and its on-ice shot. Touch screens keep the jar, as the
+   cans keep theirs. */
 .vibe-packs--supplements .vibe-packs__media {
   border: 0;
   background: transparent;
@@ -1709,9 +1711,20 @@ html.vibe-loading.vibe-compose #header-group .vibe-marquee-section {
 .vibe-packs--supplements .vibe-packs__card:hover .vibe-packs__media img {
   transform: none;
 }
-.vibe-packs--supplements .vibe-packs__card:hover .vibe-packs__media,
-.vibe-packs--supplements .vibe-packs__card:focus-within .vibe-packs__media {
+.vibe-packs--supplements .vibe-packs__media:hover {
   transform: scale(1.06) translateY(-6px);
+}
+.vibe-packs--supplements .vibe-packs__body {
+  text-align: center;
+}
+.vibe-packs--supplements .vibe-packs__controls,
+.vibe-packs--supplements .vibe-packs__plan,
+.vibe-packs--supplements .vibe-packs__price {
+  justify-content: center;
+}
+/* the count sits beside the price instead of at the far edge */
+.vibe-packs--supplements .vibe-packs__each {
+  margin-left: 6px;
 }
 .vibe-packs__media .vibe-packs__scene {
   opacity: 0;
@@ -1719,8 +1732,7 @@ html.vibe-loading.vibe-compose #header-group .vibe-marquee-section {
     opacity 0.3s ease-in-out,
     transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
-.vibe-packs__card:hover .vibe-packs__scene,
-.vibe-packs__card:focus-within .vibe-packs__scene {
+.vibe-packs__media:hover .vibe-packs__scene {
   opacity: 1;
 }
 /* (touch screens used to show the scene from the start; now they keep the
