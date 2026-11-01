@@ -10,10 +10,6 @@ import type { VibeSupplement } from "@/components/sites/vibebevvy-com-5acc75fc/s
 
 const SUBSCRIBE_OFF = 0.2;
 const HEADING = "Some jobs need a softgel.";
-/* the Urinary Health jar says "Helps prevent recurrent UTIs†", so the footnote
-   that dagger points to has to be on the page */
-const NOTE =
-  "†These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure or prevent any disease.";
 const IMAGE_SIZES = "(min-width: 990px) 31vw, (min-width: 750px) 560px, 100vw";
 
 const money = (value: number) => `$${value.toFixed(2)}`;
@@ -106,12 +102,12 @@ function SupplementCard({ supplement }: { supplement: VibeSupplement }) {
 }
 
 /**
- * The three softgels, right after the variety packs and in their clothes:
- * the same eyebrow, display heading, bordered rounded media boxes and
- * controls, with the three cards across the whole row (the packs take two
- * of its thirds). The box shows the jar cut-out on the cream; the open-jar
- * scene fades in over it on hover, like the drinks' on-ice shots. The note
- * under the cards is the supplement footnote, then the blob button.
+ * The three softgels, right after the variety packs: the same eyebrow and
+ * display heading, three cards across the row, each a jar cut-out floating
+ * on the cream with its copy and controls centred under it; the feature
+ * graphic fades in over the jar on hover, like the drinks' on-ice shots.
+ * Then the blob button. (The FDA footnote the Urinary Health label's dagger
+ * pointed to came off at the owner's request, 2026-11-01.)
  */
 export function Supplements() {
   return (
@@ -131,9 +127,6 @@ export function Supplements() {
         ))}
       </div>
 
-      <RevealOnScroll as="p" className="vibe-packs__note">
-        {NOTE}
-      </RevealOnScroll>
       <div className="vibe-packs__cta" data-vibe-pop="">
         <PillButton href="/collections/supplements">Shop all supplements</PillButton>
       </div>

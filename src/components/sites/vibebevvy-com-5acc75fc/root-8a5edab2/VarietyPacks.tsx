@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 
 import { defaultMix, PACKS, separately, type Pack } from "@/components/sites/vibebevvy-com-5acc75fc/shared/packs";
 import { PillButton } from "@/components/sites/vibebevvy-com-5acc75fc/shared/PillButton";
@@ -19,6 +19,26 @@ const short = (name: string) => name.replace(/^Gimme /, "");
 /* "Two of each" for ten, "Four of each" for twenty */
 const EACH = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve"];
 
+/* the theme's yellow seal (vibebevvy.com's "probiotic cocktails" sticker) for
+   the hero pack: a fourteen-point burst with the words inside, tilted, hung
+   over the picture's top right corner */
+const SEAL_POINTS = Array.from({ length: 28 }, (_, i) => {
+  const angle = (Math.PI * 2 * i) / 28 - Math.PI / 2;
+  const radius = i % 2 ? 42 : 49;
+  return `${(50 + radius * Math.cos(angle)).toFixed(2)},${(50 + radius * Math.sin(angle)).toFixed(2)}`;
+}).join(" ");
+
+function Seal({ children }: { children: ReactNode }) {
+  return (
+    <span className="vibe-packs__badge">
+      <svg viewBox="0 0 100 100" aria-hidden="true">
+        <polygon points={SEAL_POINTS} fill="var(--vibe-yellow)" stroke="var(--vibe-fg)" strokeWidth="1.3" strokeLinejoin="round" />
+      </svg>
+      <span className="vibe-packs__badge-text">{children}</span>
+    </span>
+  );
+}
+
 /* the mix for a new total: the same proportions where they divide evenly
    (two boxes of your mix), otherwise the even split */
 function rescale(mix: number[], from: number, to: number): number[] {
@@ -35,6 +55,7 @@ function PackCard({ pack }: { pack: Pack }) {
   /* the picker opens over the card, so the row of cards keeps its shape */
   const [mixOpen, setMixOpen] = useState(false);
   const [option, setOption] = useState(0);
+  const [sizeIndex, setSizeIndex] = useState(0);
   const timer = useRef(0);
   const panelRef = useRef<HTMLDivElement>(null);
 
@@ -43,7 +64,11 @@ function PackCard({ pack }: { pack: Pack }) {
     if (mixOpen) panelRef.current?.focus();
   }, [mixOpen]);
 
-  const size = pack.sizes[0];
+  const size = pack.sizes[sizeIndex];
+  /* a size that is a box of its own (the trio beside the duo's pairs) brings
+     its own name and picture, and the pack's choices do not apply to it */
+  const own = size.image ? size : undefined;
+  const current = own ? undefined : pack.options?.[option];
   /* a pick-your-own pack is mixed across the whole order: ten drinks a box */
   const total = size.count * quantity;
   const chosen = mix.reduce((sum, n) => sum + n, 0);
@@ -54,14 +79,13 @@ function PackCard({ pack }: { pack: Pack }) {
   const price = unit * quantity;
   /* a set says what it saves against its contents bought one by one */
   const saving = picks ? 0 : separately(size) - size.price;
-  const current = pack.options?.[option];
-  const image = current?.image ?? pack.image;
-  const hoverImage = current ? current.hoverImage : pack.hoverImage;
-  const alt = current?.alt ?? pack.alt;
-  const name = current?.name ?? pack.name;
-  const blurb = current?.blurb ?? pack.blurb;
+  const image = own?.image ?? current?.image ?? pack.image;
+  const hoverImage = own ? own.hoverImage : current ? current.hoverImage : pack.hoverImage;
+  const alt = own?.alt ?? current?.alt ?? pack.alt;
+  const name = own?.name ?? current?.name ?? pack.name;
+  const blurb = own?.blurb ?? current?.blurb ?? pack.blurb;
   const contents = !picks
-    ? pack.contents
+    ? (own?.contents ?? pack.contents)
     : !untouched
       ? `Your mix of ${total}`
       : total % 5 === 0
@@ -88,13 +112,14 @@ function PackCard({ pack }: { pack: Pack }) {
   return (
     <article className="vibe-packs__card">
       <div className="vibe-packs__media">
-        {pack.badge ? <span className="vibe-packs__badge">{pack.badge}</span> : null}
         <Image key={image} src={image} alt={alt} fill sizes={IMAGE_SIZES} quality={85} />
         {hoverImage ? (
           /* the box from the side, over the front view while the pointer is on it */
           <Image className="vibe-packs__scene" src={hoverImage} alt="" fill sizes={IMAGE_SIZES} quality={85} />
         ) : null}
       </div>
+      {/* on the card, not in the picture box, which clips: the seal hangs over the corner */}
+      {pack.badge ? <Seal>{pack.badge}</Seal> : null}
 
       <div className="vibe-packs__body" data-vibe-reveal="">
         <span className="vibe-reveal__inner">
@@ -120,11 +145,24 @@ function PackCard({ pack }: { pack: Pack }) {
             Customize your {total} drinks
           </button>
         ) : null}
+        {pack.sizes.length > 1 ? (
+          /* which box, the duo or the trio; the quantity counts boxes either way */
+          <fieldset className="vibe-packs__sizes">
+            <legend className="sr-only">Box</legend>
+            {pack.sizes.map((s, index) => (
+              <label key={s.label} className={index === sizeIndex ? "is-active" : undefined}>
+                <input type="radio" name={`${pack.id}-size`} checked={index === sizeIndex} onChange={() => setSizeIndex(index)} />
+                {s.label}
+              </label>
+            ))}
+          </fieldset>
+        ) : null}
       </div>
 
       {pack.options ? (
-        /* which set, or which pair, goes in the box; the picture and words follow */
-        <fieldset className="vibe-packs__sizes vibe-packs__options">
+        /* which set, or which pair, goes in the box; the picture and words
+           follow. A box of its own (the trio) takes the pairs out of play. */
+        <fieldset className="vibe-packs__sizes vibe-packs__options" disabled={!!own}>
           <legend className="sr-only">{pack.optionsLabel ?? "Choice"}</legend>
           {pack.options.map((o, index) => (
             <label key={o.key} className={index === option ? "is-active" : undefined}>

@@ -2,14 +2,17 @@
 The square is the box plus a small margin, whichever way the box is longer;
 where the render has more than that, it is cropped around the box, and where
 it has less, the edge rows or columns are smeared outward (extend-canvas.py)
-so the backdrop simply continues. Then the picture is graded like the
-cut-outs (grade-cutout.py at 0.7: tone and colour only, no vignette or
-grain) and saved as a JPEG.
+so the backdrop simply continues; a box that runs off the top or bottom of
+the render keeps that edge as the picture's edge. Then the picture is graded
+like the cut-outs (grade-cutout.py at 0.7: tone and colour only, no vignette
+or grain) and saved as a JPEG.
 
-usage: python -I scripts/square-pack.py [--margin 0.03] <in> <out.jpg> [...more pairs]
+usage: python -I scripts/square-pack.py [--margin 0.03] [--tall 1.0] <in> <out.jpg> [...more pairs]
 
 --margin is the air around the box as a share of its longer side; the closed
 cartons sit well at the default, an open box seen from above wants ~0.12.
+--tall is the picture's height as a share of its width: 1 is the square card
+picture, 1.448 the mega menu's 290:420 tile (the extra height is backdrop).
 """
 
 import importlib.util
@@ -18,7 +21,7 @@ import tempfile
 from pathlib import Path
 
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageFilter
 
 HERE = Path(__file__).resolve().parent
 
@@ -35,20 +38,34 @@ grade_cutout = load("grade_cutout", "grade-cutout.py")
 
 MARGIN = 0.03  # of the box's longer side, each side of it
 EDGE = 24  # levels from the backdrop at which a pixel counts as subject
+CUT = 60  # a side of the picture this far from the backdrop's colour is covered by the subject
+TOUCH = 4  # a subject with no more backdrop rows than this above or below it runs off that edge
 
 
-def subject_box(img: np.ndarray) -> tuple[int, int, int, int]:
-    """x0, x1, y0, y1 of everything that is not backdrop. The backdrop is a
-    vertical gradient, so each row's own outer 2% gives its colour."""
+def subject_box(img: np.ndarray) -> tuple[int, int, int, int, np.ndarray]:
+    """x0, x1, y0, y1 of everything that is not backdrop, and every pixel's
+    distance from it. The backdrop is a vertical gradient, so each row's own
+    outer 2% gives its colour: whichever side's is nearer the border's overall
+    colour, in case the subject runs off the other side."""
     h, w = img.shape[:2]
     edge = max(4, w // 50)
-    row_bg = np.median(np.concatenate([img[:, :edge], img[:, -edge:]], axis=1), axis=1)  # h x 3
+    frame = np.median(
+        np.concatenate([img[:edge].reshape(-1, 3), img[-edge:].reshape(-1, 3), img[:, :edge].reshape(-1, 3), img[:, -edge:].reshape(-1, 3)]),
+        axis=0,
+    )
+    left = np.median(img[:, :edge], axis=1)  # h x 3
+    right = np.median(img[:, -edge:], axis=1)
+    both = np.median(np.concatenate([img[:, :edge], img[:, -edge:]], axis=1), axis=1)
+    # both sides together, unless the subject covers one of them
+    left_off = np.abs(left - frame).max(axis=1) > CUT
+    right_off = np.abs(right - frame).max(axis=1) > CUT
+    row_bg = np.where(left_off[:, None], right, np.where(right_off[:, None], left, both))
     dev = np.abs(img - row_bg[:, None, :]).max(axis=2)
     cols = np.where((dev > EDGE).mean(axis=0) > 0.01)[0]
     rows = np.where((dev > EDGE).mean(axis=1) > 0.01)[0]
     if cols.size == 0 or rows.size == 0:
         raise SystemExit("no subject found in front of the backdrop")
-    return int(cols[0]), int(cols[-1]), int(rows[0]), int(rows[-1])
+    return int(cols[0]), int(cols[-1]), int(rows[0]), int(rows[-1]), dev
 
 
 def fit(length: int, s0: int, s1: int, side: int) -> tuple[int, int, int]:
@@ -62,21 +79,68 @@ def fit(length: int, s0: int, s1: int, side: int) -> tuple[int, int, int]:
     return 0, before, side - length - before
 
 
-def square(src: str, dst: str, margin: float = MARGIN) -> None:
+def pad(crop: Image.Image, top: int, bottom: int, above: int, below: int) -> Image.Image:
+    """Add `top` rows above the picture and `bottom` below. Each band is the
+    picture's outermost backdrop rows (never the subject: at most `above` or
+    `below` of them) stretched to the band's height, blurred and faded a
+    little darker toward the far edge, then cross-faded into the picture, as
+    extend-canvas.py does."""
+    w, h = crop.size
+    out = Image.new("RGB", (w, h + top + bottom))
+    out.paste(crop, (0, top))
+
+    def band(rows: Image.Image, height: int, flip: bool) -> Image.Image:
+        strip = rows.resize((w, height), Image.BILINEAR).filter(ImageFilter.GaussianBlur(radius=max(8, w // 120)))
+        arr = np.asarray(strip).astype(np.float32)
+        fade = np.linspace(1.0, 0.88, height, dtype=np.float32)
+        arr *= (fade[::-1] if flip else fade)[:, None, None]
+        return Image.fromarray(arr.clip(0, 255).astype(np.uint8))
+
+    if top:
+        n = max(2, min(above, h // 40))
+        out.paste(band(crop.crop((0, 0, w, n)), top, True), (0, 0))
+    if bottom:
+        n = max(2, min(below, h // 40))
+        out.paste(band(crop.crop((0, h - n, w, h)), bottom, False), (0, h + top))
+    arr = np.asarray(out).astype(np.float32)
+    k = max(6, h // 60)
+    if top:
+        for i in range(min(k, above)):
+            a = (i + 1) / (k + 1)
+            arr[top + i] = arr[top + i] * a + arr[top - 1] * (1 - a)
+    if bottom:
+        for i in range(min(k, below)):
+            a = (i + 1) / (k + 1)
+            y = top + h - 1 - i
+            arr[y] = arr[y] * a + arr[top + h] * (1 - a)
+    return Image.fromarray(arr.clip(0, 255).astype(np.uint8))
+
+
+def square(src: str, dst: str, margin: float = MARGIN, tall: float = 1.0) -> None:
     im = Image.open(src).convert("RGB")
     img = np.asarray(im).astype(np.int16)
-    x0, x1, y0, y1 = subject_box(img)
+    x0, x1, y0, y1, _ = subject_box(img)
     w, h = im.size
     side = int(round(max(x1 - x0 + 1, y1 - y0 + 1) * (1 + 2 * margin)))
     side = min(side, max(w, h))
+    height = int(round(side * tall))
     cx, left, right = fit(w, x0, x1, side)
-    cy, top, bottom = fit(h, y0, y1, side)
-    crop = im.crop((cx, cy, cx + min(side, w), cy + min(side, h)))
+    cy, top, bottom = fit(h, y0, y1, height)
+    crop_h = min(height, h)
+    # the backdrop rows above and below the subject within the crop: what a
+    # band is made from. A subject that runs off the top or the bottom of the
+    # render keeps that edge as the picture's edge, with all the added room
+    # on the other side: a band there would show it cut off in mid-air
+    above = y0 - cy
+    below = cy + crop_h - 1 - y1
+    if top + bottom and (above <= TOUCH) != (below <= TOUCH):
+        top, bottom = (0, top + bottom) if above <= TOUCH else (top + bottom, 0)
+    crop = im.crop((cx, cy, cx + min(side, w), cy + crop_h))
+    if top or bottom:
+        crop = pad(crop, top, bottom, above, below)
     with tempfile.TemporaryDirectory() as tmp:
         step = Path(tmp) / "a.png"
         crop.save(step)
-        if top or bottom:
-            extend_canvas.extend(str(step), str(step), top, bottom)
         if left or right:
             # extend-canvas works on the top and bottom: turn the picture on
             # its side (left edge down), pad, turn it back
@@ -95,11 +159,14 @@ def square(src: str, dst: str, margin: float = MARGIN) -> None:
 
 if __name__ == "__main__":
     args = sys.argv[1:]
-    margin = MARGIN
-    if args[:1] == ["--margin"]:
-        margin = float(args[1])
+    margin, tall = MARGIN, 1.0
+    while args[:1] in (["--margin"], ["--tall"]):
+        if args[0] == "--margin":
+            margin = float(args[1])
+        else:
+            tall = float(args[1])
         args = args[2:]
     if len(args) < 2 or len(args) % 2:
         raise SystemExit(__doc__)
     for i in range(0, len(args), 2):
-        square(args[i], args[i + 1], margin)
+        square(args[i], args[i + 1], margin, tall)

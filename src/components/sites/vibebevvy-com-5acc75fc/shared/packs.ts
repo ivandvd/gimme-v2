@@ -10,6 +10,14 @@ export interface PackSize {
   /** jars of softgels in the pack */
   jars?: number;
   price: number;
+  /** a size that is a box of its own (the trio beside the duo): its own name,
+      words and picture, and the pack's options do not apply to it */
+  name?: string;
+  contents?: string;
+  blurb?: string;
+  image?: string;
+  hoverImage?: string;
+  alt?: string;
 }
 
 /** one way a pack comes (one of the sets, or the duo's pairs), with its own
@@ -39,6 +47,8 @@ export interface Pack {
   /** the card picture, and the box from another angle for the pointer */
   image: string;
   hoverImage?: string;
+  /** the box on the mega menu's portrait tile (the front view, taller) */
+  tileImage?: string;
   alt: string;
   badge?: string;
   /** a choice of what goes in, each with its own picture; the first is shown at rest */
@@ -58,10 +68,11 @@ export function defaultMix(count: number): number[] {
 /* The three packs (2026-11-01): the Starter Pack (ten drinks a box, an even
    split or your own mix across however many boxes), the sets (six drinks
    and a jar of softgels: Glow, Cycle Care or Daily Care) and the Supplement
-   Duo (the softgels in pairs). All the pictures are the owner's renders,
-   framed by scripts/square-pack.py. Prices are placeholders on the ladder he
-   agreed: the starter at the single price, a set about an eighth under its
-   contents bought apart. House rule: the word "can" never appears in copy. */
+   Duo (the softgels in pairs, or all three as the Trio). All the pictures
+   are the owner's renders, framed by scripts/square-pack.py. Prices are
+   placeholders on the ladder he agreed: the starter at the single price, a
+   set or duo about an eighth under its contents bought apart, the trio a
+   fifth under. House rule: the word "can" never appears in copy. */
 export const PACKS: Pack[] = [
   {
     id: "starter-pack",
@@ -71,6 +82,7 @@ export const PACKS: Pack[] = [
     blurb: "An even mix of the five to start, or set your own.",
     image: `${PACKS_BASE}/starter-pack.jpg`,
     hoverImage: `${PACKS_BASE}/starter-pack-angle.jpg`,
+    tileImage: `${PACKS_BASE}/starter-pack-tile.jpg`,
     alt: "The gimme Starter Pack: a cream carton with a lavender lid and the five drinks showing through its window",
     badge: "Most popular",
     /* one box of ten; the quantity stepper counts boxes and the mix spans them */
@@ -84,6 +96,7 @@ export const PACKS: Pack[] = [
     blurb: "Glow and Sleep drinks, with a month of Glow softgels.",
     image: `${PACKS_BASE}/glow-set.jpg`,
     hoverImage: `${PACKS_BASE}/glow-set-angle.jpg`,
+    tileImage: `${PACKS_BASE}/glow-set-tile.jpg`,
     alt: "The gimme Glow Set: a pink carton of Glow and Sleep drinks with a jar of Glow softgels in a tray beside it",
     optionsLabel: "Set",
     options: [
@@ -123,30 +136,50 @@ export const PACKS: Pack[] = [
     name: "Supplement Duo",
     contents: "2 supplements, your pair",
     blurb: "Two jars in one box, a month of each.",
-    image: `${PACKS_BASE}/supplement-duo-glow-pms-2.jpg`,
+    image: `${PACKS_BASE}/supplement-duo-glow-pms-front.jpg`,
+    tileImage: `${PACKS_BASE}/supplement-duo-tile.jpg`,
     alt: "The gimme Supplement Duo: an open gift box holding two jars of softgels",
     optionsLabel: "Pair",
     options: [
       {
         key: "glow-pms",
         label: "Glow + PMS",
-        image: `${PACKS_BASE}/supplement-duo-glow-pms-2.jpg`,
+        image: `${PACKS_BASE}/supplement-duo-glow-pms-front.jpg`,
+        hoverImage: `${PACKS_BASE}/supplement-duo-glow-pms-angle.jpg`,
         alt: "The Supplement Duo box open, with the Glow and PMS Relief jars inside",
       },
       {
         key: "glow-urinary",
         label: "Glow + Urinary",
-        image: `${PACKS_BASE}/supplement-duo-glow-urinary-2.jpg`,
+        image: `${PACKS_BASE}/supplement-duo-glow-urinary-front.jpg`,
+        hoverImage: `${PACKS_BASE}/supplement-duo-glow-urinary-angle.jpg`,
         alt: "The Supplement Duo box open, with the Glow and Urinary Health jars inside",
       },
       {
         key: "pms-urinary",
         label: "PMS + Urinary",
-        image: `${PACKS_BASE}/supplement-duo-pms-urinary-2.jpg`,
+        image: `${PACKS_BASE}/supplement-duo-pms-urinary-front.jpg`,
+        hoverImage: `${PACKS_BASE}/supplement-duo-pms-urinary-angle.jpg`,
         alt: "The Supplement Duo box open, with the Urinary Health and PMS Relief jars inside",
       },
     ],
-    sizes: [{ label: "Duo", count: 0, jars: 2, price: 42.99 }],
+    /* the duo, or the trio beside it on the quantity row; the trio is its own
+       box and takes the pairs out of play */
+    sizes: [
+      { label: "Duo", count: 0, jars: 2, price: 42.99 },
+      {
+        label: "Trio",
+        count: 0,
+        jars: 3,
+        price: 59.99,
+        name: "Supplement Trio",
+        contents: "3 supplements, the full set",
+        blurb: "Glow, Urinary Health and PMS Relief, a month of each.",
+        image: `${PACKS_BASE}/supplement-trio-front.jpg`,
+        hoverImage: `${PACKS_BASE}/supplement-trio-angle.jpg`,
+        alt: "The gimme Supplement Trio: an open gift box holding the Glow, Urinary Health and PMS Relief jars",
+      },
+    ],
   },
 ];
 

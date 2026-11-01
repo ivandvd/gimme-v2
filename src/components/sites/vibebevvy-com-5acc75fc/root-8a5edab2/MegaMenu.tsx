@@ -15,8 +15,6 @@ interface Tile {
   href: string;
   image: string;
   name: string;
-  /** a square picture shown whole on the cream, not cropped to the tile */
-  contain?: boolean;
 }
 
 type GroupKey = "drinks" | "supplements" | "packs";
@@ -30,7 +28,8 @@ interface Group {
 
 /* Left column, after the live panel (Bevvies / Merch / Shop All): each name
    has its own row of tiles, shown while the name is under the pointer. The
-   drinks show their on-ice shots, the softgels their studio shots. */
+   drinks show their on-ice shots, the softgels their feature graphics and
+   the packs their boxes, each made for the tile's portrait shape. */
 const GROUPS: Group[] = [
   {
     key: "drinks",
@@ -48,7 +47,7 @@ const GROUPS: Group[] = [
     key: "packs",
     label: "Variety Packs",
     href: "/collections/packs",
-    tiles: PACKS.map((p) => ({ key: p.id, href: "/collections/packs", image: p.image, name: p.name, contain: true })),
+    tiles: PACKS.map((p) => ({ key: p.id, href: "/collections/packs", image: p.tileImage ?? p.image, name: p.name })),
   },
 ];
 const BOTTOM_LINK = { label: "Shop All", href: "/collections/shop-all" };
@@ -174,7 +173,7 @@ export function MegaMenu({ open, top, panelRef }: MegaMenuProps) {
               <Link
                 key={`${group.key}-${tile.key}`}
                 href={tile.href}
-                className={cn("vibe-mega__tile", tile.contain && "vibe-mega__tile--contain")}
+                className="vibe-mega__tile"
                 style={{ "--i": i } as CSSProperties}
               >
                 <span className="vibe-mega__tile-media">

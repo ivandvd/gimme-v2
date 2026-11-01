@@ -1680,6 +1680,10 @@ html.vibe-loading.vibe-compose #header-group .vibe-marquee-section {
   justify-content: center;
   margin-top: 22px;
 }
+/* no note under the softgels (the FDA line came off): the button keeps its air */
+.vibe-packs--supplements .vibe-packs__cta {
+  margin-top: 48px;
+}
 /* three across from 990px: the three packs, and the three softgels. Cards
    in a row share its height, and each pins its plan, price and button to
    the bottom, so those line up whatever sits above them. */
@@ -1736,20 +1740,39 @@ html.vibe-loading.vibe-compose #header-group .vibe-marquee-section {
    line of copy under each name, the duo's pair switch, the starter's mix as
    a row of chips, and its picker, which opens over the card's lower half so
    the row of cards keeps its shape ---- */
+/* the hero pack's seal: the theme's yellow burst with a thin plum line,
+   tilted, hanging over the picture's top right corner; it sits on the card,
+   since the picture box clips */
 .vibe-packs__badge {
   position: absolute;
-  top: 14px;
-  left: 14px;
-  z-index: 1;
-  padding: 7px 12px 5px;
-  border-radius: 999px;
-  background: var(--vibe-fg);
-  color: var(--vibe-bg);
-  font-family: var(--vibe-font-mono);
-  font-size: max(11px, 0.7vw);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  top: -14px;
+  right: -14px;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: clamp(84px, 7.2vw, 104px);
+  aspect-ratio: 1;
+  transform: rotate(9deg);
   pointer-events: none;
+  filter: drop-shadow(0 2px 3px rgb(31 2 41 / 0.14));
+}
+.vibe-packs__badge svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.vibe-packs__badge-text {
+  position: relative;
+  max-width: 72%;
+  text-align: center;
+  font-family: var(--vibe-font-mono);
+  font-size: clamp(9px, 0.76vw, 11px);
+  line-height: 1.2;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--vibe-fg);
+  text-wrap: balance;
 }
 .vibe-packs__blurb {
   margin: 10px 0 0;
@@ -1770,6 +1793,15 @@ html.vibe-loading.vibe-compose #header-group .vibe-marquee-section {
   letter-spacing: 0;
   text-transform: none;
   white-space: nowrap;
+}
+/* the pairs step aside while the trio is the box */
+.vibe-packs__options:disabled {
+  opacity: 0.38;
+  pointer-events: none;
+}
+.vibe-packs__options:disabled label.is-active {
+  background: transparent;
+  color: inherit;
 }
 /* beside the quantity: the way into the picker, saying how many drinks the
    order holds (ten a box) */
@@ -3247,13 +3279,6 @@ button.vibe-btn {
 }
 .vibe-mega__tile:hover .vibe-mega__tile-media img {
   transform: scale(1.04);
-}
-/* the packs' square pictures, whole on the cream instead of cropped */
-.vibe-mega__tile--contain .vibe-mega__tile-media {
-  background: #efe3d4;
-}
-.vibe-mega__tile--contain .vibe-mega__tile-media img {
-  object-fit: contain;
 }
 .vibe-mega__tile-title {
   font-family: var(--vibe-font-text);
