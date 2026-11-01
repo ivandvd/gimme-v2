@@ -6,6 +6,7 @@ import { Accordion } from "@/components/sites/vibebevvy-com-5acc75fc/root-8a5eda
 import { Banner } from "@/components/sites/vibebevvy-com-5acc75fc/root-8a5edab2/Banner";
 import { Benefits } from "@/components/sites/vibebevvy-com-5acc75fc/root-8a5edab2/Benefits";
 import { Cta } from "@/components/sites/vibebevvy-com-5acc75fc/root-8a5edab2/Cta";
+import { Film } from "@/components/sites/vibebevvy-com-5acc75fc/root-8a5edab2/Film";
 import { PressMarquee } from "@/components/sites/vibebevvy-com-5acc75fc/root-8a5edab2/PressMarquee";
 import { Footer } from "@/components/sites/vibebevvy-com-5acc75fc/root-8a5edab2/Footer";
 import { Header } from "@/components/sites/vibebevvy-com-5acc75fc/root-8a5edab2/Header";
@@ -40,6 +41,7 @@ export default function Home() {
         <VarietyPacks />
         <Supplements />
         <Ribbon line="Health that tastes like a treat. Real fruit. Zero sugar. One job each." />
+        <Film />
         <Benefits />
         <Testimonial />
         <Subscription />

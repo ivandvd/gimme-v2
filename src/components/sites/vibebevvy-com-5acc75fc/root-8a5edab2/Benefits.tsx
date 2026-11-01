@@ -32,8 +32,8 @@ const BENEFITS: Benefit[] = [
     tag: "Health benefits",
     title: "Every drink has a job to do. Here’s what’s in each one, what it does, and why we chose it.",
     href: "/pages/health-benefits",
-    image: `${SHARED}/benefits/gimme-health-clean.jpg`,
-    alt: "A Gimme Focus, Crisp Green Apple, packed in ice",
+    image: `${SHARED}/benefits/gimme-health-claims-clean.jpg`,
+    alt: "A Gimme Energy, Citrus Melt, with its claims called out: B vitamins and probiotics, zero grams of added sugar, caffeine free, low calories",
   },
   {
     id: "sustainability",
