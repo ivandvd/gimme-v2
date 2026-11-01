@@ -1814,8 +1814,8 @@ html.vibe-loading.vibe-compose #header-group .vibe-marquee-section {
   left: 0;
   right: 0;
   top: 55%;
-  /* from just inside the bottom edge of the square picture */
-  top: calc(100cqw - 10px);
+  /* from just under the square picture to the bottom of the card */
+  top: calc(100cqw + 12px);
   bottom: 0;
   z-index: 6;
   display: flex;
