@@ -6,7 +6,10 @@ so the backdrop simply continues. Then the picture is graded like the
 cut-outs (grade-cutout.py at 0.7: tone and colour only, no vignette or
 grain) and saved as a JPEG.
 
-usage: python -I scripts/square-pack.py <in> <out.jpg> [...more pairs]
+usage: python -I scripts/square-pack.py [--margin 0.03] <in> <out.jpg> [...more pairs]
+
+--margin is the air around the box as a share of its longer side; the closed
+cartons sit well at the default, an open box seen from above wants ~0.12.
 """
 
 import importlib.util
@@ -59,12 +62,12 @@ def fit(length: int, s0: int, s1: int, side: int) -> tuple[int, int, int]:
     return 0, before, side - length - before
 
 
-def square(src: str, dst: str) -> None:
+def square(src: str, dst: str, margin: float = MARGIN) -> None:
     im = Image.open(src).convert("RGB")
     img = np.asarray(im).astype(np.int16)
     x0, x1, y0, y1 = subject_box(img)
     w, h = im.size
-    side = int(round(max(x1 - x0 + 1, y1 - y0 + 1) * (1 + 2 * MARGIN)))
+    side = int(round(max(x1 - x0 + 1, y1 - y0 + 1) * (1 + 2 * margin)))
     side = min(side, max(w, h))
     cx, left, right = fit(w, x0, x1, side)
     cy, top, bottom = fit(h, y0, y1, side)
@@ -92,7 +95,11 @@ def square(src: str, dst: str) -> None:
 
 if __name__ == "__main__":
     args = sys.argv[1:]
+    margin = MARGIN
+    if args[:1] == ["--margin"]:
+        margin = float(args[1])
+        args = args[2:]
     if len(args) < 2 or len(args) % 2:
         raise SystemExit(__doc__)
     for i in range(0, len(args), 2):
-        square(args[i], args[i + 1])
+        square(args[i], args[i + 1], margin)
